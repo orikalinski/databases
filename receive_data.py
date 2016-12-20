@@ -8,7 +8,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE",
                       "gmp_databases.gmp_databases.settings")
 
 from gmp_databases.gmp_databases.models import User, Place, \
-    Image, Country, City, Type, Location, LOCATION_TYPE, OpeningHours
+    Image, Country, City, Type, Location, LOCATION_TYPE, OpeningHours, Review
 
 api_keys = ["AIzaSyC5b1etMPL7i8z8RJ8YP_eexpOQxSO1rpw",
             "AIzaSyAu4PKwcADVNSbjkfs6wOcxNeEHtHO6boQ",
@@ -36,10 +36,10 @@ lat_lng_list = [(34.052235, -118.243683)]#, (40.748817, -73.985428),
 
 
 def iterate_lat_lng(lat_iterations=1, lng_iterations=1):
-    results = dict()
     for start_lat, start_lng in lat_lng_list:
         for i in xrange(lat_iterations):
             for j in xrange(lng_iterations):
+                results = dict()
                 print "Processing i: %s, j: %s" % (i, j)
                 query_result = handle_api_request(start_lat + i * 0.01,
                                                   start_lng + j * 0.01)
@@ -54,12 +54,11 @@ def iterate_lat_lng(lat_iterations=1, lng_iterations=1):
                     results[place.place_id] = {field: place.details.get(field, "")
                                                for field in set_of_fields_to_select}
                     photos_urls = list()
-                    for photo in place.photos:
-                        photo.get(maxheight=500, maxwidth=500)
-                        photos_urls.append(photo.url)
+                    #for photo in place.photos:
+                    #    photo.get(maxheight=500, maxwidth=500)
+                    #    photos_urls.append(photo.url)
                     results[place.place_id]["photos_urls"] = photos_urls
-    persist_to_db(results)
-    return results
+                persist_to_db(results)
 
 
 def persist_to_db(results):
@@ -93,6 +92,13 @@ def persist_to_db(results):
                                      rating=result["rating"], website=result["website"])
         place.types.add(*types)
         place.opening_hours.add(*opening_hours_list)
+
+        for review in result["reviews"]:
+            Review.objects.get_or_create(author_name=review["author_name"],
+                                         rating=review["rating"],
+                                         text=review["text"],
+                                         place=place)
+
         for photo_url in result["photos_urls"]:
             Image.objects.get_or_create(url=photo_url, place=place)
 

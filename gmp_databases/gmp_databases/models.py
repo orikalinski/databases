@@ -1,9 +1,7 @@
-from enum import Enum
-
 from django.db.models import Model, CharField, ForeignKey, ManyToManyField, DateTimeField, IntegerField, TextField, \
     TimeField
-from django.db.models import OneToOneField
 from django.db.models.fields import DecimalField
+from enum import Enum
 
 
 DEFAULT_CHAR_FIELD_MAX_LENGTH = 256
