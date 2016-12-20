@@ -7,7 +7,7 @@ from django.db.models.fields import DecimalField
 
 
 DEFAULT_CHAR_FIELD_MAX_LENGTH = 256
-location_type_enum = Enum("location_type", "user place")
+LOCATION_TYPE = Enum("location_type", "user place")
 
 
 class OpeningHours(Model):
@@ -33,13 +33,13 @@ class City(Model):
 
 
 class Location(Model):
-    type = IntegerField(choices=[(t.name, t.value) for t in location_type_enum])
-    lat = DecimalField(max_digits=14, decimal_places=12)
-    lng = DecimalField(max_digits=14, decimal_places=12)
+    type = IntegerField(choices=[(t.name, t.value) for t in LOCATION_TYPE])
+    lat = DecimalField(max_digits=16, decimal_places=12)
+    lng = DecimalField(max_digits=16, decimal_places=12)
     formatted_address = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
     country = OneToOneField(Country)
     city = OneToOneField(City)
-    street = OneToOneField(Street)
+    #street = OneToOneField(Street, null=True)
 
 
 class Place(Model):
