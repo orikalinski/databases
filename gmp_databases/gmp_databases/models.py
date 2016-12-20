@@ -37,9 +37,9 @@ class Location(Model):
     lat = DecimalField(max_digits=16, decimal_places=12)
     lng = DecimalField(max_digits=16, decimal_places=12)
     formatted_address = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-    country = OneToOneField(Country)
-    city = OneToOneField(City)
-    #street = OneToOneField(Street, null=True)
+    country = ForeignKey(Country)
+    city = ForeignKey(City)
+    #street = ForeignKey(Street, null=True)
 
 
 class Place(Model):

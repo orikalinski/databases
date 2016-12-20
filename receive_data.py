@@ -21,7 +21,7 @@ relevant_types = [types.TYPE_FOOD, types.TYPE_ZOO, types.TYPE_BAR,
                   types.TYPE_SHOPPING_MALL]
 set_of_fields_to_select = {"name", "website", "formatted_address", "geometry",
                            "international_phone_number", "opening_hours",
-                           "reviews", "rating", "adr_address"}
+                           "reviews", "rating", "adr_address", "types"}
 
 api_key_cool_down = 3600
 deactivated_keys = list()
@@ -44,19 +44,19 @@ def iterate_lat_lng(lat_iterations=1, lng_iterations=1):
                 query_result = handle_api_request(start_lat + i * 0.01,
                                                   start_lng + j * 0.01)
                 for place in query_result.places:
+                    print "Preparing data for place: %s" % place.name
                     if place.place_id in results:
                         continue
                     try:
                         place.get_details()
                     except GooglePlacesError:
                         break
-                    results[place.place_id] = {key: value for key, value
-                                                          in place.details.iteritems()
-                                                          if key in set_of_fields_to_select}
+                    results[place.place_id] = {field: place.details.get(field, "")
+                                               for field in set_of_fields_to_select}
                     photos_urls = list()
                     for photo in place.photos:
-                        if hasattr(photo, "url"):
-                            photos_urls.append(photo.url)
+                        photo.get(maxheight=500, maxwidth=500)
+                        photos_urls.append(photo.url)
                     results[place.place_id]["photos_urls"] = photos_urls
     persist_to_db(results)
     return results
@@ -64,12 +64,13 @@ def iterate_lat_lng(lat_iterations=1, lng_iterations=1):
 
 def persist_to_db(results):
     for result in results.values():
+        print "Persisting place: %s" % result["name"]
         soup = BeautifulSoup(result["adr_address"])
         country, is_created = Country.objects.get_or_create(name=soup.find("span", {"class": "region"}).next)
         city, is_created = City.objects.get_or_create(name=soup.find("span", {"class": "locality"}).next)
         location, is_created = Location.objects.get_or_create(type=LOCATION_TYPE.place.value,
-                                           lat=result["geometry"]["location"]["lat"],
-                                           lng=result["geometry"]["location"]["lng"],
+                                           lat=round(result["geometry"]["location"]["lat"], 5),
+                                           lng=round(result["geometry"]["location"]["lng"], 5),
                                            formatted_address=result["formatted_address"],
                                            country=country,
                                            city=city)
@@ -84,13 +85,14 @@ def persist_to_db(results):
             close = daily_opening_hours["close"]
             opening_hours_list.append(
                 OpeningHours.objects.get_or_create(day=open["day"],
-                                                   open=open["time"],
-                                                   close=close["time"])[0])
+                                                   open="%s:%s" % (open["time"][:2], open["time"][2:]),
+                                                   close="%s:%s" % (close["time"][:2], close["time"][2:]))[0])
 
         place, is_created = Place.objects.get_or_create(name=result["name"], location=location,
-                                     types=types, phone_number=result["international_phone_number"],
-                                     rating=result["rating"], website=result["website"],
-                                     opening_hours=opening_hours_list)
+                                     phone_number=result["international_phone_number"],
+                                     rating=result["rating"], website=result["website"])
+        place.types.add(*types)
+        place.opening_hours.add(*opening_hours_list)
         for photo_url in result["photos_urls"]:
             Image.objects.get_or_create(url=photo_url, place=place)
 
@@ -112,7 +114,8 @@ def handle_api_request(lat, lng):
                                                         types=relevant_types,
                                                         radius=700)
         except GooglePlacesError:
+            print "Deactivating api_key: %s" % google_places.api_key
             deactivated_keys.insert(0, (k, datetime.utcnow()))
 
 if __name__ == '__main__':
-    print iterate_lat_lng()
+    iterate_lat_lng()

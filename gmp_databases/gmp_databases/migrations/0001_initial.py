@@ -49,12 +49,11 @@ class Migration(SchemaMigration):
         db.create_table(u'gmp_databases_location', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('type', self.gf('django.db.models.fields.IntegerField')()),
-            ('lat', self.gf('django.db.models.fields.DecimalField')(max_digits=14, decimal_places=12)),
-            ('lng', self.gf('django.db.models.fields.DecimalField')(max_digits=14, decimal_places=12)),
+            ('lat', self.gf('django.db.models.fields.DecimalField')(max_digits=16, decimal_places=12)),
+            ('lng', self.gf('django.db.models.fields.DecimalField')(max_digits=16, decimal_places=12)),
             ('formatted_address', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('country', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['gmp_databases.Country'], unique=True)),
-            ('city', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['gmp_databases.City'], unique=True)),
-            ('street', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['gmp_databases.Street'], unique=True)),
+            ('country', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.Country'])),
+            ('city', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.City'])),
         ))
         db.send_create_signal(u'gmp_databases', ['Location'])
 
@@ -207,13 +206,12 @@ class Migration(SchemaMigration):
         },
         u'gmp_databases.location': {
             'Meta': {'object_name': 'Location'},
-            'city': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['gmp_databases.City']", 'unique': 'True'}),
-            'country': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['gmp_databases.Country']", 'unique': 'True'}),
+            'city': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.City']"}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.Country']"}),
             'formatted_address': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lat': ('django.db.models.fields.DecimalField', [], {'max_digits': '14', 'decimal_places': '12'}),
-            'lng': ('django.db.models.fields.DecimalField', [], {'max_digits': '14', 'decimal_places': '12'}),
-            'street': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['gmp_databases.Street']", 'unique': 'True'}),
+            'lat': ('django.db.models.fields.DecimalField', [], {'max_digits': '16', 'decimal_places': '12'}),
+            'lng': ('django.db.models.fields.DecimalField', [], {'max_digits': '16', 'decimal_places': '12'}),
             'type': ('django.db.models.fields.IntegerField', [], {})
         },
         u'gmp_databases.openinghours': {
