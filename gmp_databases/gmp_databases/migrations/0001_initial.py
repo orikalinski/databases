@@ -11,8 +11,9 @@ class Migration(SchemaMigration):
         # Adding model 'OpeningHours'
         db.create_table(u'gmp_databases_openinghours', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('open', self.gf('django.db.models.fields.DateTimeField')()),
-            ('close', self.gf('django.db.models.fields.DateTimeField')()),
+            ('day', self.gf('django.db.models.fields.IntegerField')()),
+            ('open', self.gf('django.db.models.fields.TimeField')()),
+            ('close', self.gf('django.db.models.fields.TimeField')()),
         ))
         db.send_create_signal(u'gmp_databases', ['OpeningHours'])
 
@@ -217,9 +218,10 @@ class Migration(SchemaMigration):
         },
         u'gmp_databases.openinghours': {
             'Meta': {'object_name': 'OpeningHours'},
-            'close': ('django.db.models.fields.DateTimeField', [], {}),
+            'close': ('django.db.models.fields.TimeField', [], {}),
+            'day': ('django.db.models.fields.IntegerField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'open': ('django.db.models.fields.DateTimeField', [], {})
+            'open': ('django.db.models.fields.TimeField', [], {})
         },
         u'gmp_databases.place': {
             'Meta': {'object_name': 'Place'},

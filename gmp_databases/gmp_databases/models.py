@@ -1,6 +1,7 @@
 from enum import Enum
 
-from django.db.models import Model, CharField, ForeignKey, ManyToManyField, DateTimeField, IntegerField, TextField
+from django.db.models import Model, CharField, ForeignKey, ManyToManyField, DateTimeField, IntegerField, TextField, \
+    TimeField
 from django.db.models import OneToOneField
 from django.db.models.fields import DecimalField
 
@@ -10,8 +11,9 @@ location_type_enum = Enum("location_type", "user place")
 
 
 class OpeningHours(Model):
-    open = DateTimeField()
-    close = DateTimeField()
+    day = IntegerField()
+    open = TimeField()
+    close = TimeField()
 
 
 class Type(Model):
