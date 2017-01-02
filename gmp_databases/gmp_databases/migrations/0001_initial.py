@@ -13,7 +13,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('day', self.gf('django.db.models.fields.IntegerField')()),
             ('open', self.gf('django.db.models.fields.TimeField')()),
-            ('close', self.gf('django.db.models.fields.TimeField')()),
+            ('close', self.gf('django.db.models.fields.TimeField')(null=True)),
         ))
         db.send_create_signal(u'gmp_databases', ['OpeningHours'])
 
@@ -51,9 +51,9 @@ class Migration(SchemaMigration):
             ('type', self.gf('django.db.models.fields.IntegerField')()),
             ('lat', self.gf('django.db.models.fields.DecimalField')(max_digits=16, decimal_places=12)),
             ('lng', self.gf('django.db.models.fields.DecimalField')(max_digits=16, decimal_places=12)),
-            ('formatted_address', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('country', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.Country'])),
-            ('city', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.City'])),
+            ('formatted_address', self.gf('django.db.models.fields.CharField')(max_length=256, null=True)),
+            ('country', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.Country'], null=True)),
+            ('city', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.City'], null=True)),
         ))
         db.send_create_signal(u'gmp_databases', ['Location'])
 
@@ -62,9 +62,9 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=256)),
             ('location', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.Location'])),
-            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('rating', self.gf('django.db.models.fields.DecimalField')(max_digits=2, decimal_places=1)),
-            ('website', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=256, null=True)),
+            ('rating', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=2, decimal_places=1)),
+            ('website', self.gf('django.db.models.fields.CharField')(max_length=256, null=True)),
         ))
         db.send_create_signal(u'gmp_databases', ['Place'])
 
@@ -206,9 +206,9 @@ class Migration(SchemaMigration):
         },
         u'gmp_databases.location': {
             'Meta': {'object_name': 'Location'},
-            'city': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.City']"}),
-            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.Country']"}),
-            'formatted_address': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'city': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.City']", 'null': 'True'}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.Country']", 'null': 'True'}),
+            'formatted_address': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lat': ('django.db.models.fields.DecimalField', [], {'max_digits': '16', 'decimal_places': '12'}),
             'lng': ('django.db.models.fields.DecimalField', [], {'max_digits': '16', 'decimal_places': '12'}),
@@ -216,7 +216,7 @@ class Migration(SchemaMigration):
         },
         u'gmp_databases.openinghours': {
             'Meta': {'object_name': 'OpeningHours'},
-            'close': ('django.db.models.fields.TimeField', [], {}),
+            'close': ('django.db.models.fields.TimeField', [], {'null': 'True'}),
             'day': ('django.db.models.fields.IntegerField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'open': ('django.db.models.fields.TimeField', [], {})
@@ -227,10 +227,10 @@ class Migration(SchemaMigration):
             'location': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.Location']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
             'opening_hours': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['gmp_databases.OpeningHours']", 'symmetrical': 'False'}),
-            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'rating': ('django.db.models.fields.DecimalField', [], {'max_digits': '2', 'decimal_places': '1'}),
+            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True'}),
+            'rating': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '2', 'decimal_places': '1'}),
             'types': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['gmp_databases.Type']", 'symmetrical': 'False'}),
-            'website': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+            'website': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True'})
         },
         u'gmp_databases.review': {
             'Meta': {'object_name': 'Review'},

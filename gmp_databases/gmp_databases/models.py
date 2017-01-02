@@ -11,7 +11,7 @@ LOCATION_TYPE = Enum("location_type", "user place")
 class OpeningHours(Model):
     day = IntegerField()
     open = TimeField()
-    close = TimeField()
+    close = TimeField(null=True)
 
 
 class Type(Model):
@@ -34,9 +34,9 @@ class Location(Model):
     type = IntegerField(choices=[(t.name, t.value) for t in LOCATION_TYPE])
     lat = DecimalField(max_digits=16, decimal_places=12)
     lng = DecimalField(max_digits=16, decimal_places=12)
-    formatted_address = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-    country = ForeignKey(Country)
-    city = ForeignKey(City)
+    formatted_address = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH, null=True)
+    country = ForeignKey(Country, null=True)
+    city = ForeignKey(City, null=True)
     #street = ForeignKey(Street, null=True)
 
 
@@ -45,9 +45,9 @@ class Place(Model):
     location = ForeignKey(Location)
     types = ManyToManyField(Type)
     opening_hours = ManyToManyField(OpeningHours)
-    phone_number = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-    rating = DecimalField(max_digits=2, decimal_places=1)
-    website = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
+    phone_number = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH, null=True)
+    rating = DecimalField(max_digits=2, decimal_places=1, null=True)
+    website = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH, null=True)
 
 
 class Review(Model):
