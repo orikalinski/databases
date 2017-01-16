@@ -7,6 +7,9 @@ from models import Place, Review, Image
 from django.db.models import Q, Avg, Count
 
 
+FIELDS = ["website", "rating", "name", "location__formatted_address", "id"]
+
+
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
@@ -24,11 +27,31 @@ def get_ordered_limited_places(places, order_by, limit):
     return places[:limit]
 
 
-def filter_places_by_opening_hours_and_rating(request, day, starttime, endtime, lower_rating, order_by, limit):
-    places = get_filter_by_opening_hours(Place.objects, day, starttime, endtime)
-    places = places.filter(rating__gt=lower_rating)
-    places = get_ordered_limited_places(places, order_by, limit)
-    return render(request, 'first_html.html', {'results': list(places.values())})
+def filter_places_by_opening_hours_and_type(request):
+    day = request.GET.get("day")
+    start_time = request.GET.get("open_time")
+    end_time = request.GET.get("close_time")
+    place_type = request.GET.get("type")
+    order_by = None
+    limit = None
+    if day:
+        start_time, start_ampm = start_time.split()
+        end_time, end_ampm = end_time.split()
+        start_time = "%s:%s" % (int(start_time.split(":")[0]) + 12, start_time.split(":")[1]) \
+            if start_ampm == "PM" else start_time
+        end_time = "%s:%s" % (int(end_time.split(":")[0]) + 12, end_time.split(":")[1]) \
+            if end_ampm == "PM" else end_time
+        places = get_filter_by_opening_hours(Place.objects, day, start_time, end_time)
+        places = places.filter(types__name=place_type)
+        places = get_ordered_limited_places(places, order_by, limit)
+        results = [dict({"numeric_id": numeric_id + 1}, **place_dict) for numeric_id, place_dict
+                   in enumerate(places.values(*FIELDS))]
+        searched_for_results = True
+    else:
+        results = list()
+        searched_for_results = False
+    return render(request, 'typeOH.html', {"results": results,
+                                           "searched_for_results": searched_for_results})
 
 
 def filter_places_by_address_and_rating(request, address, radius, bottom_rating, order_by, limit):

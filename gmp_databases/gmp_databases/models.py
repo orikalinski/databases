@@ -53,7 +53,7 @@ class Place(Model):
 class Review(Model):
     author_name = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
     rating = DecimalField(max_digits=2, decimal_places=1)
-    text = TextField()
+    text = CharField(max_length=5000)
     place = ForeignKey(Place)
 
 

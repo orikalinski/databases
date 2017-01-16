@@ -91,7 +91,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('author_name', self.gf('django.db.models.fields.CharField')(max_length=256)),
             ('rating', self.gf('django.db.models.fields.DecimalField')(max_digits=2, decimal_places=1)),
-            ('text', self.gf('django.db.models.fields.TextField')()),
+            ('text', self.gf('django.db.models.fields.CharField')(max_length=5000)),
             ('place', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.Place'])),
         ))
         db.send_create_signal(u'gmp_databases', ['Review'])
@@ -238,7 +238,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'place': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.Place']"}),
             'rating': ('django.db.models.fields.DecimalField', [], {'max_digits': '2', 'decimal_places': '1'}),
-            'text': ('django.db.models.fields.TextField', [], {})
+            'text': ('django.db.models.fields.CharField', [], {'max_length': '5000'})
         },
         u'gmp_databases.street': {
             'Meta': {'object_name': 'Street'},

@@ -1,5 +1,6 @@
 <!doctype html>
 <!--[if lt IE 8]><html class="no-js lt-ie8"> <![endif]-->
+{% load static %}
 <html class="no-js">
     <head>
         <meta charset="utf-8">
@@ -14,21 +15,21 @@
         <meta name="application-name" content="" />
         <!-- Css files -->
         <!-- Icons -->
-        <link href="css/icons.css" rel="stylesheet" />
+        <link href="{% static  "css/icons.css" %}" rel="stylesheet" />
         <!-- Bootstrap stylesheets (included template modifications) -->
-        <link href="css/bootstrap.css" rel="stylesheet" />
+        <link href="{% static  "css/bootstrap.css" %}" rel="stylesheet" />
         <!-- Plugins stylesheets (all plugin custom css) -->
-        <link href="css/plugins.css" rel="stylesheet" />
+        <link href="{% static  "css/plugins.css" %}" rel="stylesheet" />
         <!-- Main stylesheets (template main css file) -->
-        <link href="css/main.css" rel="stylesheet" />
+        <link href="{% static  "css/main.css" %}" rel="stylesheet" />
         <!-- Custom stylesheets ( Put your own changes here ) -->
-        <link href="css/custom.css" rel="stylesheet" />
+        <link href="{% static  "css/custom.css" %}" rel="stylesheet" />
         <!-- Fav and touch icons -->
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png">
-        <link rel="icon" href="img/ico/favicon.ico" type="image/png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static  "img/ico/apple-touch-icon-144-precomposed.png" %}">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static  "img/ico/apple-touch-icon-114-precomposed.png" %}">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static  "img/ico/apple-touch-icon-72-precomposed.png" %}">
+        <link rel="apple-touch-icon-precomposed" href="{% static  "img/ico/apple-touch-icon-57-precomposed.png" %}">
+        <link rel="icon" href="{% static  "img/ico/favicon.ico" %}" type="image/png">
         <!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
         <meta name="msapplication-TileColor" content="#3399cc" />
     </head>
@@ -40,8 +41,8 @@
         <div id="header" class="page-navbar">
             <!-- .navbar-brand -->
             <a href="index.html" class="navbar-brand hidden-xs hidden-sm">
-                <img src="img/logo.png" class="logo hidden-xs" alt="Dynamic logo">
-                <img src="img/logosm.png" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo">
+                <img src="{% static  "img/logo.png" %}" class="logo hidden-xs" alt="Dynamic logo">
+                <img src="{% static  "img/logosm.png" %}" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo">
             </a>
             <!-- / navbar-brand -->
             <!-- .no-collapse -->
@@ -161,7 +162,7 @@
                                         <h4 class="panel-title">Search</h4>
                                     </div>
                                     <div class="panel-body pt0 pb0">
-                                        <form id="validate" class="form-horizontal group-border stripped" role="form" method="get" action="filter_oh_and_type">
+                                        <form id="validate" class="form-horizontal group-border stripped" role="form" method="get" action="#">
                                             <div class="form-group">
                                                 <label class="col-lg-2 col-md-3 control-label">Type</label>
                                                 <div class="col-lg-10 col-md-9">
@@ -310,70 +311,70 @@
         </div>
         <!-- Javascripts -->
         <!-- Load pace first -->
-        <script src="plugins/core/pace/pace.min.js"></script>
+        <script src="{% static  "plugins/core/pace/pace.min.js" %}"></script>
         <!-- Important javascript libs(put in all pages) -->
-        <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="{% static  "http://code.jquery.com/jquery-2.1.1.min.js" %}"></script>
         <script>
-        window.jQuery || document.write('<script src="js/libs/jquery-2.1.1.min.js">\x3C/script>')
+        window.jQuery || document.write('<script src="{% static  "js/libs/jquery-2.1.1.min.js" %}">\x3C/script>')
         </script>
-        <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <script src="{% static  "http://code.jquery.com/ui/1.10.4/jquery-ui.js" %}"></script>
         <script>
-        window.jQuery || document.write('<script src="js/libs/jquery-ui-1.10.4.min.js">\x3C/script>')
+        window.jQuery || document.write('<script src="{% static  "js/libs/jquery-ui-1.10.4.min.js" %}">\x3C/script>')
         </script>
         <!--[if lt IE 9]>
-  <script type="text/javascript" src="js/libs/excanvas.min.js"></script>
-  <script type="text/javascript" src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <script type="text/javascript" src="js/libs/respond.min.js"></script>
+  <script type="text/javascript" src="{% static  "js/libs/excanvas.min.js" %}"></script>
+  <script type="text/javascript" src="{% static  "http://html5shim.googlecode.com/svn/trunk/html5.js" %}"></script>
+  <script type="text/javascript" src="{% static  "js/libs/respond.min.js" %}"></script>
 <![endif]-->
         <!-- Bootstrap plugins -->
-        <script src="js/bootstrap/bootstrap.js"></script>
+        <script src="{% static  "js/bootstrap/bootstrap.js" %}"></script>
         <!-- Core plugins ( not remove ) -->
-        <script src="js/libs/modernizr.custom.js"></script>
+        <script src="{% static  "js/libs/modernizr.custom.js" %}"></script>
         <!-- Handle responsive view functions -->
-        <script src="js/jRespond.min.js"></script>
+        <script src="{% static  "js/jRespond.min.js" %}"></script>
         <!-- Custom scroll for sidebars,tables and etc. -->
-        <script src="plugins/core/slimscroll/jquery.slimscroll.min.js"></script>
-        <script src="plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
+        <script src="{% static  "plugins/core/slimscroll/jquery.slimscroll.min.js" %}"></script>
+        <script src="{% static  "plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js" %}"></script>
         <!-- Remove click delay in touch -->
-        <script src="plugins/core/fastclick/fastclick.js"></script>
+        <script src="{% static  "plugins/core/fastclick/fastclick.js" %}"></script>
         <!-- Increase jquery animation speed -->
-        <script src="plugins/core/velocity/jquery.velocity.min.js"></script>
+        <script src="{% static  "plugins/core/velocity/jquery.velocity.min.js" %}"></script>
         <!-- Quick search plugin (fast search for many widgets) -->
-        <script src="plugins/core/quicksearch/jquery.quicksearch.js"></script>
+        <script src="{% static  "plugins/core/quicksearch/jquery.quicksearch.js" %}"></script>
         <!-- Bootbox fast bootstrap modals -->
-        <script src="plugins/ui/bootbox/bootbox.js"></script>
+        <script src="{% static  "plugins/ui/bootbox/bootbox.js" %}"></script>
         <!-- Other plugins ( load only nessesary plugins for every page) -->
-        <script src="js/libs/date.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.custom.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.resize.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.time.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.growraf.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.categories.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.stack.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.orderBars.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.tooltip.min.js"></script>
-        <script src="plugins/charts/flot/jquery.flot.curvedLines.js"></script>
-        <script src="plugins/charts/sparklines/jquery.sparkline.js"></script>
-        <script src="plugins/ui/waypoint/waypoints.js"></script>
-        <script src="plugins/ui/weather/skyicons.js"></script>
-        <script src="plugins/ui/notify/jquery.gritter.js"></script>
-        <script src="plugins/misc/vectormaps/jquery-jvectormap-1.2.2.min.js"></script>
-        <script src="plugins/misc/vectormaps/maps/jquery-jvectormap-world-mill-en.js"></script>
-        <script src="plugins/misc/countTo/jquery.countTo.js"></script>
-        <script src="js/jquery.dynamic.js"></script>
-        <script src="plugins/forms/fancyselect/fancySelect.js"></script>
-        <script src="plugins/forms/select2/select2.js"></script>
-        <script src="plugins/forms/maskedinput/jquery.maskedinput.js"></script>
-        <script src="plugins/forms/dual-list-box/jquery.bootstrap-duallistbox.js"></script>
-        <script src="plugins/forms/spinner/jquery.bootstrap-touchspin.js"></script>
-        <script src="plugins/forms/bootstrap-timepicker/bootstrap-timepicker.js"></script>
-        <script src="js/libs/typeahead.bundle.js"></script>
-        <script src="plugins/forms/summernote/summernote.js"></script>
-        <script src="plugins/forms/bootstrap-markdown/bootstrap-markdown.js"></script>
-        <script src="plugins/forms/dropzone/dropzone.js"></script>
-        <script src="plugins/charts/sparklines/jquery.sparkline.js"></script>
-        <script src="js/jquery.dynamic.js"></script>
-        <script src="js/main.js"></script>
-        <script src="js/pages/forms-advanced.js"></script>
+        <script src="{% static  "js/libs/date.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.custom.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.resize.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.time.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.growraf.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.categories.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.stack.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.orderBars.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.tooltip.min.js" %}"></script>
+        <script src="{% static  "plugins/charts/flot/jquery.flot.curvedLines.js" %}"></script>
+        <script src="{% static  "plugins/charts/sparklines/jquery.sparkline.js" %}"></script>
+        <script src="{% static  "plugins/ui/waypoint/waypoints.js" %}"></script>
+        <script src="{% static  "plugins/ui/weather/skyicons.js" %}"></script>
+        <script src="{% static  "plugins/ui/notify/jquery.gritter.js" %}"></script>
+        <script src="{% static  "plugins/misc/vectormaps/jquery-jvectormap-1.2.2.min.js" %}"></script>
+        <script src="{% static  "plugins/misc/vectormaps/maps/jquery-jvectormap-world-mill-en.js" %}"></script>
+        <script src="{% static  "plugins/misc/countTo/jquery.countTo.js" %}"></script>
+        <script src="{% static  "js/jquery.dynamic.js" %}"></script>
+        <script src="{% static  "plugins/forms/fancyselect/fancySelect.js" %}"></script>
+        <script src="{% static  "plugins/forms/select2/select2.js" %}"></script>
+        <script src="{% static  "plugins/forms/maskedinput/jquery.maskedinput.js" %}"></script>
+        <script src="{% static  "plugins/forms/dual-list-box/jquery.bootstrap-duallistbox.js" %}"></script>
+        <script src="{% static  "plugins/forms/spinner/jquery.bootstrap-touchspin.js" %}"></script>
+        <script src="{% static  "plugins/forms/bootstrap-timepicker/bootstrap-timepicker.js" %}"></script>
+        <script src="{% static  "js/libs/typeahead.bundle.js" %}"></script>
+        <script src="{% static  "plugins/forms/summernote/summernote.js" %}"></script>
+        <script src="{% static  "plugins/forms/bootstrap-markdown/bootstrap-markdown.js" %}"></script>
+        <script src="{% static  "plugins/forms/dropzone/dropzone.js" %}"></script>
+        <script src="{% static  "plugins/charts/sparklines/jquery.sparkline.js" %}"></script>
+        <script src="{% static  "js/jquery.dynamic.js" %}"></script>
+        <script src="{% static  "js/main.js" %}"></script>
+        <script src="{% static  "js/pages/forms-advanced.js" %}"></script>
     </body>
 </html>
