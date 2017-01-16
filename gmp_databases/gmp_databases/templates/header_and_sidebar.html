@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 <!--[if lt IE 8]><html class="no-js lt-ie8"> <![endif]-->
 <html class="no-js">
 <head>
@@ -14,21 +15,21 @@
 <meta name="application-name" content="" />
 <!-- Css files -->
 <!-- Icons -->
-<link href="css/icons.css" rel="stylesheet" />
+<link href="{% static  "css/icons.css" %}" rel="stylesheet" />
 <!-- Bootstrap stylesheets (included template modifications) -->
-<link href="css/bootstrap.css" rel="stylesheet" />
+<link href="{% static  "css/bootstrap.css" %}" rel="stylesheet" />
 <!-- Plugins stylesheets (all plugin custom css) -->
-<link href="css/plugins.css" rel="stylesheet" />
+<link href="{% static  "css/plugins.css" %}" rel="stylesheet" />
 <!-- Main stylesheets (template main css file) -->
-<link href="css/main.css" rel="stylesheet" />
+<link href="{% static  "css/main.css" %}" rel="stylesheet" />
 <!-- Custom stylesheets ( Put your own changes here ) -->
-<link href="css/custom.css" rel="stylesheet" />
+<link href="{% static  "css/custom.css" %}" rel="stylesheet" />
 <!-- Fav and touch icons -->
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png">
-<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png">
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png">
-<link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png">
-<link rel="icon" href="img/ico/favicon.ico" type="image/png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static  "img/ico/apple-touch-icon-144-precomposed.png" %}">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static  "img/ico/apple-touch-icon-114-precomposed.png" %}">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static  "img/ico/apple-touch-icon-72-precomposed.png" %}">
+<link rel="apple-touch-icon-precomposed" href="{% static  "img/ico/apple-touch-icon-57-precomposed.png" %}">
+<link rel="icon" href="{% static  "img/ico/favicon.ico" %}" type="image/png">
 <!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
 <meta name="msapplication-TileColor" content="#3399cc" />
 </head>
@@ -40,8 +41,8 @@
 <div id="header" class="page-navbar">
 <!-- .navbar-brand -->
 <a href="index.html" class="navbar-brand hidden-xs hidden-sm">
-    <img src="img/logo.png" class="logo hidden-xs" alt="Dynamic logo">
-    <img src="img/logosm.png" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo">
+    <img src="{% static  "img/logo.png" %}" class="logo hidden-xs" alt="Dynamic logo">
+    <img src="{% static  "img/logosm.png" %}" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo">
 </a>
 <!-- / navbar-brand -->
 <!-- .no-collapse -->
@@ -114,20 +115,20 @@
             <!-- .side-nav -->
             <div class="side-nav">
                 <ul class="nav">
-                    <li><a href="index.html"><i class="l-basic-laptop"></i><span class="txt">Home Page</span></a>
+                    <li><a href="/index"><i class="l-basic-laptop"></i><span class="txt">Home Page</span></a>
                     </li>
                     <li>
                         <a href="#"><i class="l-software-layout-header-3columns""></i> <span class="txt">Queries</span></a>
                         <ul class="sub">
-                            <li><a href="ratingAddrRadius.html"><span class="txt">Location Based Rating</span></a>
+                            <li><a href="/rating_and_address_search"><span class="txt">Location Based Rating</span></a>
                             </li>
-                            <li><a href="typeOH.html"><span class="txt">Type Open Hours</span></a>
+                            <li><a href="/open_hours_and_type_search"><span class="txt">Type Open Hours</span></a>
                             </li>
-                            <li><a href="detailsTable.html"><span class="txt">All</span></a>
+                            <li><a href="/full_search"><span class="txt">All</span></a>
                             </li>
-                            <li><a href="textSearch.html"><span class="txt">Text Search</span></a>
+                            <li><a href="/text_search"><span class="txt">Text Search</span></a>
                             </li>
-                            <li><a href="statistics.html"><span class="txt">Statistics</span></a>
+                            <li><a href="/statistics"><span class="txt">Statistics</span></a>
                             </li>
                         </ul>
                     </li>

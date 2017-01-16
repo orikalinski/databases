@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from views import index, filter_places_by_opening_hours_and_type, \
+from views import home_page_stats, filter_places_by_opening_hours_and_type, \
     filter_places_by_address_and_rating, filter_by_all_params
 
 from django.contrib import admin
@@ -11,11 +11,11 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^index/', index),
-    url('^filter_oh_and_type/',
+    url(r'^index/', home_page_stats),
+    url('^opening_hours_and_type_search/',
         filter_places_by_opening_hours_and_type),
-    url('^filter_address_and_type/(.+)/(\d{1,5})/(\d\.\d)/',
+    url('^address_and_rating_search/',
         filter_places_by_address_and_rating),
-    url('^filter_by_all_params/(\d)/(\d{2,2}\:\d{2,2})/(\d{2,2}\:\d{2,2})/(.+)/(\d{1,5})/(\d\.\d)/(.+)/',
+    url('^full_search/',
         filter_by_all_params)
 )

@@ -10,10 +10,6 @@ from django.db.models import Q, Avg, Count
 FIELDS = ["website", "rating", "name", "location__formatted_address", "id"]
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
-
-
 def get_filter_by_opening_hours(places, day, starttime, endtime):
     return places.filter(Q(opening_hours__day=day) & Q(
         Q(opening_hours__open__range=(starttime, endtime)) | Q(opening_hours__close__range=(starttime, endtime)))) \
