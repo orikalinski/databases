@@ -12,11 +12,25 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_DIR, 'db.sqlite3'),
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'DbMysql13',
+       'USER': 'DbMysql13',
+       'PASSWORD': 'DbMysql13',
+       'HOST': 'mysqlsrv.cs.tau.ac.il',
+       'OPTIONS': {'charset': 'utf8mb4'},
+       'PORT': '3306',
+   }
 }
 
 # Quick-start development settings - unsuitable for production
@@ -59,16 +73,6 @@ ROOT_URLCONF = 'gmp_databases.urls'
 
 WSGI_APPLICATION = 'gmp_databases.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

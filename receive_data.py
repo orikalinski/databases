@@ -161,6 +161,7 @@ def persist_to_db(results):
 
             place, is_created = Place.objects.get_or_create(name=result["name"], location=location,
                                                             phone_number=result.get("international_phone_number"),
+
                                                             rating=result.get("rating"), website=result.get("website"))
             place.types.add(*types)
             place.opening_hours.add(*opening_hours_list)

@@ -1,0 +1,81 @@
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+
+from models import Place, Review, Image
+from django.db.models import Q, Avg, Count
+
+
+def index(request):
+    return HttpResponse("Hello, world. You're at the polls index.")
+
+
+def get_filter_by_opening_hours(places, day, starttime, endtime):
+    return places.filter(Q(opening_hours__day=day) & Q(
+        Q(opening_hours__open__range=(starttime, endtime)) | Q(opening_hours__close__range=(starttime, endtime)))) \
+        .distinct()
+
+
+def get_ordered_limited_places(places, order_by, limit):
+    limit = limit or 100
+    order_by = order_by or "rating"
+    places = places.order_by(order_by)
+    return places[:limit]
+
+
+def filter_places_by_opening_hours_and_rating(request, day, starttime, endtime, lower_rating, order_by, limit):
+    places = get_filter_by_opening_hours(Place.objects, day, starttime, endtime)
+    places = places.filter(rating__gt=lower_rating)
+    places = get_ordered_limited_places(places, order_by, limit)
+    return render(request, 'first_html.html', {'results': list(places.values())})
+
+
+def filter_places_by_address_and_rating(request, address, radius, bottom_rating, order_by, limit):
+    places = Place.objects.filter(rating__gt=bottom_rating)
+    places = get_ordered_limited_places(places, order_by, limit)
+    return render(request, 'first_html.html', {'results': list(places.values())})
+
+
+def filter_by_all_params(request, day, starttime, endtime,
+                         address, radius, bottom_rating, type_name, order_by, limit):
+    places = Place.objects.filter(rating__gt=bottom_rating)
+    places = get_filter_by_opening_hours(places, day, starttime, endtime)
+    places = places.filter(types__name=type_name)
+    places = get_ordered_limited_places(places, order_by, limit)
+    return render(request, 'first_html.html', {'results': list(places.values())})
+
+
+def insert_image(request):
+    f = request.POST.get("image")
+
+
+def insert_review(request):
+    author_name = request.POST.get("author_name")
+    place_id = request.POST.get("place_id")
+    rating = request.POST.get("rating")
+    text = request.POST.get("text")
+    Review.objects.create(author_name=author_name, place_id=place_id, rating=rating, text=text)
+    return HttpResponseRedirect(reverse("first_html.html"))
+
+
+def home_page_stats(request):
+    places_count = Place.objects.count()
+    reviews_count = Review.objects.count()
+    images_count = Image.objects.count()
+    reviews_over_rating_four = Review.objects.filter(rating__gt=4).count()
+    return render(request, 'html', {"places_count": places_count, "reviews_count": reviews_count,
+                                    "images_count": images_count, "reviews_perc_over_four":
+                                        float(reviews_over_rating_four) / reviews_count})
+
+
+def get_complicated_stats(request):
+    filtered_places = Place.objects.all().values("location__city__name",
+                                                 "types__name")\
+                           .annotate(avg_rating=Avg('rating'), count_rows=Count("rating")) \
+                           .filter(avg_rating__gt=4)
+    return render(request, 'html', list(filtered_places))
+
+
+
+
