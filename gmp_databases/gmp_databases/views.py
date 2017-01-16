@@ -115,9 +115,10 @@ def get_place_details(request):
     place = Place.objects.filter(id=place_id)
     place_details = place.values().first()
     place = place.first()
-    place_details["reviews"] = place.reviews_set.values()
-    place_details["image_url"] = place.images_set.values().first()
+    place_details["reviews"] = place.review_set.values()
+    place_details["image_url"] = place.image_set.values().first()
     place_details["types"] = place.types.values()
+    place_details["opening_hours_list"] = place.opening_hours.values()
     return render(request, "place.html", place_details)
 
 
