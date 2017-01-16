@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
-from models import Place, Review, Image
+from models import Place, Review, Image, City
 from django.db.models import Q, Avg, Count
 
 
@@ -82,10 +82,12 @@ def home_page_stats(request):
     places_count = Place.objects.count()
     reviews_count = Review.objects.count()
     images_count = Image.objects.count()
+    cities_count = City.objects.count()
     reviews_over_rating_four = Review.objects.filter(rating__gt=4).count()
-    return render(request, 'html', {"places_count": places_count, "reviews_count": reviews_count,
-                                    "images_count": images_count, "reviews_perc_over_four":
-                                        float(reviews_over_rating_four) / reviews_count})
+    return render(request, 'index.html', {"places_count": places_count, "reviews_count": reviews_count,
+                                          "images_count": images_count, "cities_count": cities_count,
+                                          "reviews_perc_over_four":
+                                              int(float(reviews_over_rating_four) / reviews_count * 100)})
 
 
 def get_complicated_stats(request):
