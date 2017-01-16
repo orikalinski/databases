@@ -23,6 +23,24 @@ def get_ordered_limited_places(places, order_by, limit):
     return places[:limit]
 
 
+def handle_times(start_time, end_time):
+    start_time, start_ampm = start_time.split()
+    end_time, end_ampm = end_time.split()
+    start_time = "%s:%s" % (int(start_time.split(":")[0]) + 12, start_time.split(":")[1]) \
+        if start_ampm == "PM" else start_time
+    end_time = "%s:%s" % (int(end_time.split(":")[0]) + 12, end_time.split(":")[1]) \
+        if end_ampm == "PM" else end_time
+    start_time = "00:00" if start_time == "24:00" else start_time
+    end_time = "00:00" if end_time == "24:00" else end_time
+    return start_time, end_time
+
+
+def get_results(places):
+    results = [dict({"numeric_id": numeric_id + 1}, **place_dict) for numeric_id, place_dict
+               in enumerate(places.values(*FIELDS))]
+    return results
+
+
 def filter_places_by_opening_hours_and_type(request):
     day = request.GET.get("day")
     start_time = request.GET.get("open_time")
@@ -31,17 +49,11 @@ def filter_places_by_opening_hours_and_type(request):
     order_by = None
     limit = None
     if day:
-        start_time, start_ampm = start_time.split()
-        end_time, end_ampm = end_time.split()
-        start_time = "%s:%s" % (int(start_time.split(":")[0]) + 12, start_time.split(":")[1]) \
-            if start_ampm == "PM" else start_time
-        end_time = "%s:%s" % (int(end_time.split(":")[0]) + 12, end_time.split(":")[1]) \
-            if end_ampm == "PM" else end_time
+        start_time, end_time = handle_times(start_time, end_time)
         places = get_filter_by_opening_hours(Place.objects, day, start_time, end_time)
         places = places.filter(types__name=place_type)
         places = get_ordered_limited_places(places, order_by, limit)
-        results = [dict({"numeric_id": numeric_id + 1}, **place_dict) for numeric_id, place_dict
-                   in enumerate(places.values(*FIELDS))]
+        results = get_results(places)
         searched_for_results = True
     else:
         results = list()
@@ -98,5 +110,12 @@ def get_complicated_stats(request):
     return render(request, 'html', list(filtered_places))
 
 
-
-
+def get_place_details(request):
+    place_id = request.GET.get("place_id")
+    place = Place.objects.filter(id=place_id)
+    place_details = place.values().first()
+    place = place.first()
+    place_details["reviews"] = place.reviews_set.values()
+    place_details["images"] = place.images_set.values()
+    place_details["types"] = place.types.values()
+    return render(request, "place.html", place_details)
