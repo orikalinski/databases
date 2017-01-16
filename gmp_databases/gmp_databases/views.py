@@ -23,7 +23,7 @@ def get_filter_by_opening_hours(places, day, starttime, endtime):
 def get_ordered_limited_places(places, order_by, limit):
     limit = limit or 100
     order_by = order_by or "rating"
-    places = places.order_by(order_by)
+    places = places.order_by("-%s" % order_by)
     return places[:limit]
 
 
