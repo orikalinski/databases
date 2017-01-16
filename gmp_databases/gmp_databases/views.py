@@ -116,6 +116,12 @@ def get_place_details(request):
     place_details = place.values().first()
     place = place.first()
     place_details["reviews"] = place.reviews_set.values()
-    place_details["images"] = place.images_set.values()
+    place_details["image_url"] = place.images_set.values().first()
     place_details["types"] = place.types.values()
     return render(request, "place.html", place_details)
+
+
+def get_place_images(request):
+    place_id = request.GET.get("place_id")
+    place_images = Place.objects.values_dict("images__url", flat=True).get(id=place_id)
+    return render(request, "gallery.html", {"place_images": place_images})
