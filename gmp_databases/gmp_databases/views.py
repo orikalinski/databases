@@ -116,7 +116,8 @@ def get_place_details(request):
     place_details = place.values().first()
     place = place.first()
     place_details["reviews"] = place.review_set.values()
-    place_details["image_url"] = place.image_set.values().first()
+    place_details["image_url"] = place.image_set.values_list("url", flat=True).first() \
+        or "https://www.raise.sg/membership/web/images/noimage.jpg"
     place_details["types"] = place.types.values()
     place_details["opening_hours_list"] = place.opening_hours.values()
     return render(request, "place.html", place_details)
@@ -124,5 +125,6 @@ def get_place_details(request):
 
 def get_place_images(request):
     place_id = request.GET.get("place_id")
+    place = Place.objects.get(id=place_id)
     place_images = Place.objects.values_dict("images__url", flat=True).get(id=place_id)
-    return render(request, "gallery.html", {"place_images": place_images})
+    return render(request, "gallery.html", {"place_name": place.name, "place_images": place_images})
