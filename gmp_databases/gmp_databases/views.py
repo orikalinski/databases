@@ -1,5 +1,6 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from time import time
+import os
+from django.shortcuts import render, render_to_response
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
@@ -41,6 +42,22 @@ def get_results(places):
     return results
 
 
+def get_images_slices(place_id):
+    place = Place.objects.get(id=place_id)
+    place_images = Place.objects.values_list("image__url", flat=True).filter(id=place_id)
+    quarter_count = len(place_images) // 4 + 1
+    place_images = [place_images[quarter_count * i:quarter_count * (i + 1)] for i in xrange(4)]
+    return place.name, place_images
+
+
+def handle_uploaded_file(f, place_id):
+    file_url = "/static/img/user_images/%s_%s" % (time(), f.name)
+    with open("%s/%s" % (os.path.dirname(__file__), file_url), 'wb+') as dest:
+        for chunk in f.chunks():
+            dest.write(chunk)
+    Image.objects.create(url=file_url, place_id=place_id)
+
+
 def filter_places_by_opening_hours_and_type(request):
     day = request.GET.get("day")
     start_time = request.GET.get("open_time")
@@ -78,7 +95,12 @@ def filter_by_all_params(request, day, starttime, endtime,
 
 
 def insert_image(request):
-    f = request.POST.get("image")
+    image = request.FILES.get("file")
+    place_id = request.POST.get("place_id")
+    handle_uploaded_file(image, place_id)
+    place_name, place_images = get_images_slices(place_id)
+    return render(request, "gallery.html", {"place_name": place_name, "place_images": place_images,
+                                            "place_id": place_id})
 
 
 def insert_review(request):
@@ -115,6 +137,7 @@ def get_place_details(request):
     place = Place.objects.filter(id=place_id)
     place_details = place.values().first()
     place = place.first()
+    place_details["place_id"] = place_details["id"]
     place_details["reviews"] = place.review_set.values()
     place_details["image_url"] = place.image_set.values_list("url", flat=True).first() \
         or "https://www.raise.sg/membership/web/images/noimage.jpg"
@@ -125,6 +148,6 @@ def get_place_details(request):
 
 def get_place_images(request):
     place_id = request.GET.get("place_id")
-    place = Place.objects.get(id=place_id)
-    place_images = Place.objects.values_dict("images__url", flat=True).get(id=place_id)
-    return render(request, "gallery.html", {"place_name": place.name, "place_images": place_images})
+    place_name, place_images = get_images_slices(place_id)
+    return render(request, "gallery.html", {"place_name": place_name, "place_images": place_images,
+                                            "place_id": place_id})
