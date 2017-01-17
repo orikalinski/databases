@@ -15,11 +15,11 @@
                                 </div>
                                 <div class="row gallery sortable-layout">
                                     <!-- Start .row -->
+
+                                    {% for col in place_images %}
                                     <div class="col-xs-12 col-md-3">
                                         <!-- Start .col-md-3 -->
-
-
-                                        {% for img_url in place_images %}
+                                        {% for img_url in col %}
                                         <div class="panel panel-default plain panelMove">
                                             <!-- Start .panel -->
                                             <div class="panel-body">
@@ -30,6 +30,7 @@
                                         </div>
                                         {% endfor %}
                                         <!-- End .panel -->
+                                    {% endfor %}
 
 
 
