@@ -24,7 +24,7 @@
                                                     <br>
                                                 </div>
                                                 <div class="profile-avatar" style="height: 200px;">
-                                                    <button type="button" class="btn btn-primary btn-alt mr5 mb10 gallery-button" href="/gallery {{ place_id }}">Gallery</button>
+                                                    <button type="button" class="btn btn-primary btn-alt mr5 mb10 gallery-button" href="/gallery?place_id={{ place_id }}">Gallery</button>
                                                     <br>
                                                 </div>
                                             </div>
@@ -34,7 +34,7 @@
                                                     <p class="job-title mb0">
                                                         <ul>
                                                             {% for type in types %}
-                                                                <li>{{ type }}</li>
+                                                                <li>{{ type.name }}</li>
                                                             {% endfor %}
                                                         </ul>
                                                     </p>
