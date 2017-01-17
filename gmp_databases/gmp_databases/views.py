@@ -1,6 +1,6 @@
 from time import time
 import os
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
