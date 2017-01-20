@@ -9,7 +9,7 @@ from django.shortcuts import render
 from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
     REVIEWS_DETAILS_QUERY, PLACE_FIRST_IMAGE_QUERY, PLACE_TYPES_QUERY, PLACE_OPENING_HOURS_QUERY, AVG_STATS_QUERY, \
     PLACES_COUNT_QUERY, REVIEWS_COUNT_QUERY, CITIES_COUNT_QUERY, IMAGES_COUNT_QUERY, REVIEWS_OVER_RATING_FOUR_QUERY, \
-    PLACE_IMAGES_QUERY, COUNT_STATS_QUERY
+    PLACE_IMAGES_QUERY, COUNT_STATS_QUERY, NAME_SEARCH_QUERY
 from models import Place, Review, Image
 
 host = "mysqlsrv.cs.tau.ac.il"
@@ -181,3 +181,15 @@ def get_place_images(request):
     place_name, place_images = get_images_slices(place_id)
     return render(request, "gallery.html", {"place_name": place_name, "place_images": place_images,
                                             "place_id": place_id})
+
+
+def text_search(request):
+    results = []
+    searched_for_results = False
+    if request.GET:
+        text = request.GET.get("text")
+        cur.execute(NAME_SEARCH_QUERY, (text, ))
+        results = get_results(cur)
+        searched_for_results = True
+    return render(request, "textSearch.html", {"results": results,
+                                               "searched_for_results": searched_for_results})

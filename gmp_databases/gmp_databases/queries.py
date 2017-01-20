@@ -176,12 +176,16 @@ WHERE
 """
 
 NAME_SEARCH_QUERY = """
-select x.name, y.formatted_address, x.rating, x.website, x.id
-from
-Place as x,
-Location as y,
-where MATCH(x.name)
-AGAINST (? IN NATURAL LANGUAGE MODE)
-and x.location_id = y.id
-limit 100
+SELECT 
+    gmp_databases_location.formatted_address,
+    gmp_databases_place.website,
+    gmp_databases_place.name,
+    gmp_databases_place.id,
+    gmp_databases_place.rating
+FROM
+    gmp_databases_place
+        LEFT OUTER JOIN
+    gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
+WHERE
+    MATCH (gmp_databases_place.name) AGAINST (%s IN NATURAL LANGUAGE MODE)
 """
