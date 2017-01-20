@@ -31,13 +31,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'gmp_databases', ['Country'])
 
-        # Adding model 'Street'
-        db.create_table(u'gmp_databases_street', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=256)),
-        ))
-        db.send_create_signal(u'gmp_databases', ['Street'])
-
         # Adding model 'City'
         db.create_table(u'gmp_databases_city', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -104,81 +97,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'gmp_databases', ['Image'])
 
-        # Adding model 'HistoryParams'
-        db.create_table(u'gmp_databases_historyparams', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('opening_hours', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.OpeningHours'])),
-            ('place_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.Type'])),
-            ('rating', self.gf('django.db.models.fields.DecimalField')(max_digits=2, decimal_places=1)),
-        ))
-        db.send_create_signal(u'gmp_databases', ['HistoryParams'])
-
-        # Adding model 'User'
-        db.create_table(u'gmp_databases_user', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('age', self.gf('django.db.models.fields.IntegerField')()),
-            ('password', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('username', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('location', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gmp_databases.Location'])),
-            ('last_login', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'gmp_databases', ['User'])
-
-        # Adding M2M table for field history_params on 'User'
-        m2m_table_name = db.shorten_name(u'gmp_databases_user_history_params')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('user', models.ForeignKey(orm[u'gmp_databases.user'], null=False)),
-            ('historyparams', models.ForeignKey(orm[u'gmp_databases.historyparams'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['user_id', 'historyparams_id'])
-
 
     def backwards(self, orm):
-        # Deleting model 'OpeningHours'
-        db.delete_table(u'gmp_databases_openinghours')
-
-        # Deleting model 'Type'
-        db.delete_table(u'gmp_databases_type')
-
-        # Deleting model 'Country'
-        db.delete_table(u'gmp_databases_country')
-
-        # Deleting model 'Street'
-        db.delete_table(u'gmp_databases_street')
-
-        # Deleting model 'City'
-        db.delete_table(u'gmp_databases_city')
-
-        # Deleting model 'Location'
-        db.delete_table(u'gmp_databases_location')
-
-        # Deleting model 'Place'
-        db.delete_table(u'gmp_databases_place')
-
-        # Removing M2M table for field types on 'Place'
-        db.delete_table(db.shorten_name(u'gmp_databases_place_types'))
-
-        # Removing M2M table for field opening_hours on 'Place'
-        db.delete_table(db.shorten_name(u'gmp_databases_place_opening_hours'))
-
-        # Deleting model 'Review'
-        db.delete_table(u'gmp_databases_review')
-
-        # Deleting model 'Image'
-        db.delete_table(u'gmp_databases_image')
-
-        # Deleting model 'HistoryParams'
-        db.delete_table(u'gmp_databases_historyparams')
-
-        # Deleting model 'User'
-        db.delete_table(u'gmp_databases_user')
-
-        # Removing M2M table for field history_params on 'User'
-        db.delete_table(db.shorten_name(u'gmp_databases_user_history_params'))
-
+	pass
 
     models = {
         u'gmp_databases.city': {
@@ -190,13 +111,6 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Country'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
-        },
-        u'gmp_databases.historyparams': {
-            'Meta': {'object_name': 'HistoryParams'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'opening_hours': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.OpeningHours']"}),
-            'place_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.Type']"}),
-            'rating': ('django.db.models.fields.DecimalField', [], {'max_digits': '2', 'decimal_places': '1'})
         },
         u'gmp_databases.image': {
             'Meta': {'object_name': 'Image'},
@@ -240,27 +154,10 @@ class Migration(SchemaMigration):
             'rating': ('django.db.models.fields.DecimalField', [], {'max_digits': '2', 'decimal_places': '1'}),
             'text': ('django.db.models.fields.CharField', [], {'max_length': '5000'})
         },
-        u'gmp_databases.street': {
-            'Meta': {'object_name': 'Street'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
-        },
         u'gmp_databases.type': {
             'Meta': {'object_name': 'Type'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
-        },
-        u'gmp_databases.user': {
-            'Meta': {'object_name': 'User'},
-            'age': ('django.db.models.fields.IntegerField', [], {}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'history_params': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['gmp_databases.HistoryParams']", 'symmetrical': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'location': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gmp_databases.Location']"}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'username': ('django.db.models.fields.CharField', [], {'max_length': '256'})
         }
     }
 

@@ -9,7 +9,7 @@ from django.shortcuts import render
 from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
     REVIEWS_DETAILS_QUERY, PLACE_FIRST_IMAGE_QUERY, PLACE_TYPES_QUERY, PLACE_OPENING_HOURS_QUERY, AVG_STATS_QUERY, \
     PLACES_COUNT_QUERY, REVIEWS_COUNT_QUERY, CITIES_COUNT_QUERY, IMAGES_COUNT_QUERY, REVIEWS_OVER_RATING_FOUR_QUERY, \
-    PLACE_IMAGES_QUERY
+    PLACE_IMAGES_QUERY, COUNT_STATS_QUERY
 from models import Place, Review, Image
 
 host = "mysqlsrv.cs.tau.ac.il"
@@ -150,7 +150,11 @@ def home_page_stats(request):
 
 def get_complicated_stats(request):
     cur.execute(AVG_STATS_QUERY)
-    return render(request, 'html', get_results(cur))
+    avg_rating_results = get_results(cur)
+    cur.execute(COUNT_STATS_QUERY)
+    count_rating_results = get_results(cur)
+    return render(request, 'statistics.html', {"avg_results": avg_rating_results,
+                                               "count_results": count_rating_results})
 
 
 def get_place_details(request):

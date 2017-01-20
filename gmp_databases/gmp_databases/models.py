@@ -2,6 +2,7 @@ from django.db.models import Model, CharField, ForeignKey, ManyToManyField, Date
     TimeField
 from django.db.models.fields import DecimalField
 from enum import Enum
+from fulltext import SearchManager
 
 
 DEFAULT_CHAR_FIELD_MAX_LENGTH = 256
@@ -22,10 +23,6 @@ class Country(Model):
     name = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
 
 
-class Street(Model):
-    name = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-
-
 class City(Model):
     name = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
 
@@ -37,7 +34,6 @@ class Location(Model):
     formatted_address = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH, null=True)
     country = ForeignKey(Country, null=True)
     city = ForeignKey(City, null=True)
-    #street = ForeignKey(Street, null=True)
 
 
 class Place(Model):
@@ -48,6 +44,7 @@ class Place(Model):
     phone_number = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH, null=True)
     rating = DecimalField(max_digits=2, decimal_places=1, null=True)
     website = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH, null=True)
+    objects = SearchManager(["name"])
 
 
 class Review(Model):
@@ -60,20 +57,3 @@ class Review(Model):
 class Image(Model):
     place = ForeignKey(Place)
     url = CharField(max_length=512)
-
-
-class HistoryParams(Model):
-    opening_hours = ForeignKey(OpeningHours)
-    place_type = ForeignKey(Type)
-    rating = DecimalField(max_digits=2, decimal_places=1)
-
-
-class User(Model):
-    first_name = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-    last_name = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-    age = IntegerField()
-    password = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-    username = CharField(max_length=DEFAULT_CHAR_FIELD_MAX_LENGTH)
-    location = ForeignKey(Location)
-    last_login = DateTimeField()
-    history_params = ManyToManyField(HistoryParams)

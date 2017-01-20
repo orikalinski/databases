@@ -79,24 +79,54 @@ ORDER BY
 
 AVG_STATS_QUERY = """
 SELECT 
-    gmp_databases_city.name,
-    gmp_databases_type.name,
-    AVG(gmp_databases_place.rating) AS avg_rating,
-    COUNT(gmp_databases_place.rating) AS count_rows
+    type_name,
+    city_name,
+    count_rating,
+    MAX(avg_rating) AS max_rating
 FROM
-    gmp_databases_place
-        LEFT OUTER JOIN
-    gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
-        LEFT OUTER JOIN
-    gmp_databases_city ON (gmp_databases_location.city_id = gmp_databases_city.id)
-        LEFT OUTER JOIN
-    gmp_databases_place_types ON (gmp_databases_place.id = gmp_databases_place_types.place_id)
-        LEFT OUTER JOIN
-    gmp_databases_type ON (gmp_databases_place_types.type_id = gmp_databases_type.id)
-GROUP BY gmp_databases_city.name , gmp_databases_type.name
-HAVING AVG(gmp_databases_place.rating) > 4.0
-ORDER BY gmp_databases_place.rating
+    (SELECT
+        gmp_databases_city.name AS city_name,
+            gmp_databases_type.name AS type_name,
+            AVG(gmp_databases_review.rating) AS avg_rating,
+            COUNT(gmp_databases_review.rating) AS count_rating
+    FROM
+        gmp_databases_place
+    LEFT OUTER JOIN gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
+    LEFT OUTER JOIN gmp_databases_city ON (gmp_databases_location.city_id = gmp_databases_city.id)
+    LEFT OUTER JOIN gmp_databases_place_types ON (gmp_databases_place.id = gmp_databases_place_types.place_id)
+    LEFT OUTER JOIN gmp_databases_type ON (gmp_databases_place_types.type_id = gmp_databases_type.id)
+    LEFT OUTER JOIN gmp_databases_review ON (gmp_databases_place.id = gmp_databases_review.place_id)
+    GROUP BY gmp_databases_city.name , gmp_databases_type.name
+    HAVING AVG(gmp_databases_review.rating) IS NOT NULL
+        AND COUNT(gmp_databases_review.rating) > 5
+    ORDER BY gmp_databases_type.name ASC , avg_rating DESC) avg_rating
+GROUP BY type_name
+ORDER BY max_rating DESC
 """
+
+
+COUNT_STATS_QUERY = """
+SELECT
+    type_name,
+    city_name,
+    MAX(count_places) AS max_count
+FROM
+    (SELECT
+        gmp_databases_city.name AS city_name,
+            gmp_databases_type.name AS type_name,
+            COUNT(gmp_databases_place.name) AS count_places
+    FROM
+        gmp_databases_place
+    LEFT OUTER JOIN gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
+    LEFT OUTER JOIN gmp_databases_city ON (gmp_databases_location.city_id = gmp_databases_city.id)
+    LEFT OUTER JOIN gmp_databases_place_types ON (gmp_databases_place.id = gmp_databases_place_types.place_id)
+    LEFT OUTER JOIN gmp_databases_type ON (gmp_databases_place_types.type_id = gmp_databases_type.id)
+    GROUP BY gmp_databases_city.name , gmp_databases_type.name
+    ORDER BY gmp_databases_type.name ASC , count_places DESC) count_places_table
+GROUP BY type_name
+ORDER BY max_count DESC
+"""
+
 
 PLACES_COUNT_QUERY = """
 SELECT
