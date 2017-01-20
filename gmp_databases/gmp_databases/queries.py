@@ -1,10 +1,10 @@
 OPENING_HOURS_AND_TYPE_QUERY = """
 SELECT DISTINCT
-gmp_databases_place.website,
-gmp_databases_place.rating,
-gmp_databases_place.name,
-gmp_databases_location.formatted_address,
-gmp_databases_place.id
+    gmp_databases_place.website,
+    gmp_databases_place.rating,
+    gmp_databases_place.name,
+    gmp_databases_location.formatted_address,
+    gmp_databases_place.id
 FROM
     gmp_databases_place
         INNER JOIN
@@ -161,7 +161,7 @@ SELECT
     COUNT(*) as reviews_count
 FROM
     gmp_databases_review
-WHERE gmp_databases_review.rating > 4.0
+WHERE gmp_databases_review.rating >= 4.0
 """
 
 PLACE_IMAGES_QUERY = """
@@ -188,4 +188,54 @@ FROM
     gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
 WHERE
     MATCH (gmp_databases_place.name) AGAINST (%s IN NATURAL LANGUAGE MODE)
+"""
+
+GEO_DISTANCE_AND_RATING_QUERY = """
+SELECT
+    gmp_databases_place.id,
+    gmp_databases_place.name,
+    gmp_databases_location.formatted_address,
+    gmp_databases_place.rating,
+    gmp_databases_place.website,
+    truncate((6371 * ACOS(COS(RADIANS(%s)) * COS(RADIANS(gmp_databases_location.lat)) *
+    COS(RADIANS(gmp_databases_location.lng) - RADIANS(%s))
+    + SIN(RADIANS(%s)) * SIN(RADIANS(gmp_databases_location.lat)))), 3) AS distance
+FROM
+    gmp_databases_place
+        RIGHT OUTER JOIN
+    gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
+WHERE
+    gmp_databases_place.rating >= %s
+HAVING distance <= %s
+"""
+
+FULL_SEARCH_QUERY = """
+SELECT DISTINCT
+    gmp_databases_place.website,
+    gmp_databases_place.rating,
+    gmp_databases_place.name,
+    gmp_databases_location.formatted_address,
+    gmp_databases_place.id,
+    truncate((6371 * ACOS(COS(RADIANS(%s)) * COS(RADIANS(gmp_databases_location.lat)) *
+    COS(RADIANS(gmp_databases_location.lng) - RADIANS(%s))
+    + SIN(RADIANS(%s)) * SIN(RADIANS(gmp_databases_location.lat)))), 3) AS distance
+FROM
+    gmp_databases_place
+        INNER JOIN
+    gmp_databases_place_opening_hours ON (gmp_databases_place.id = gmp_databases_place_opening_hours.place_id)
+        INNER JOIN
+    gmp_databases_openinghours ON (gmp_databases_place_opening_hours.openinghours_id = gmp_databases_openinghours.id)
+        INNER JOIN
+    gmp_databases_place_types ON (gmp_databases_place.id = gmp_databases_place_types.place_id)
+        INNER JOIN
+    gmp_databases_type ON (gmp_databases_place_types.type_id = gmp_databases_type.id)
+        LEFT OUTER JOIN
+    gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
+WHERE
+    (gmp_databases_openinghours.day = %s
+        AND (gmp_databases_openinghours.open BETWEEN %s AND %s
+        OR gmp_databases_openinghours.close BETWEEN %s AND %s)
+        AND gmp_databases_type.name = %s
+        AND gmp_databases_place.rating >= %s)
+HAVING distance <= %s
 """

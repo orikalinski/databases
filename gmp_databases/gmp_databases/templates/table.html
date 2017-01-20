@@ -10,13 +10,13 @@
                 <h4 class="panel-title">Results</h4>
             </div>
             <div class="panel-body">
-                <table class="table table-bordered">
+                <table style="table-layout: fixed" class="table table-bordered">
                     <thead>
                         <tr>
                             <th class="per5">#</th>
-                            <th class="per40">Name</th>
-                            <th class="per40">Address</th>
-                            <th class="per40">Website</th>
+                            <th class="per25">Name</th>
+                            <th class="per25">Address</th>
+                            <th class="per25">Website</th>
                             {% if is_distance_query %}
                                 <th class="per15">Distance</th>
                             {% endif %}
@@ -28,9 +28,9 @@
                                 <tr class="linkable-row" href="/place?place_id={{ result.id }}" style="cursor:pointer">
                                     <td>{{ result.numeric_id }}</td>
                                     <td>{{ result.name }}</td>
-                                    <td>{{ result.location__formatted_address }}</td>
+                                    <td>{{ result.formatted_address }}</td>
                                     {% if result.website %}
-                                        <td><a href="{{ result.website }}">{{ result.website }}</a></td>
+                                        <td style="overflow: hidden; white-space:nowrap; width: 200pxl"><a href="{{ result.website }}">{{ result.website }}</a></td>
                                     {% else %}
                                         <td><h5>-</h5></td>
                                     {% endif %}

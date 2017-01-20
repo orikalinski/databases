@@ -45,13 +45,13 @@
                                                 <label class="col-lg-2 col-md-3 control-label">Day</label>
                                                 <div class="col-lg-10 col-md-9">
                                                     <select class="form-control" name="day">
-                                                        <option value="1">Sunday</option>
-                                                        <option value="2">Monday</option>
-                                                        <option value="3">Tuesday</option>
-                                                        <option value="4">Wednesday</option>
-                                                        <option value="5">Thursday</option>
-                                                        <option value="6">Friday</option>
-                                                        <option value="7">Saturday</option>
+                                                        <option value="0">Sunday</option>
+                                                        <option value="1">Monday</option>
+                                                        <option value="2">Tuesday</option>
+                                                        <option value="3">Wednesday</option>
+                                                        <option value="4">Thursday</option>
+                                                        <option value="5">Friday</option>
+                                                        <option value="6">Saturday</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -61,7 +61,8 @@
                                                 <div class="col-lg-10 col-md-9">
                                                     <div class="input-group bootstrap-timepicker">
                                                         <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                                        <input id="customtime-timepicker" type="text" class="form-control" name="open_time">
+                                                        <input id="customtime-timepicker" type="text" class="form-control required"
+                                                               aria-required="true" aria-invalid="true" name="open_time">
                                                     </div>
                                                 </div>
                                             </div>
@@ -71,7 +72,8 @@
                                                 <div class="col-lg-10 col-md-9">
                                                     <div class="input-group bootstrap-timepicker">
                                                         <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                                        <input id="minute-step-timepicker" type="text" class="form-control" name="close_time">
+                                                        <input id="minute-step-timepicker" type="text" class="form-control required"
+                                                               aria-required="true" aria-invalid="true" name="close_time">
                                                     </div>
                                                 </div>
                                             </div>
@@ -171,5 +173,11 @@
         <script src="{% static  "js/jquery.dynamic.js" %}"></script>
         <script src="{% static  "js/main.js" %}"></script>
         <script src="{% static  "js/pages/forms-advanced.js" %}"></script>
+        <script src="{% static  "js/pages/forms-advanced.js" %}"></script>
+        <script src="{% static  "js/pages/forms-validation.js" %}"></script>
+        <script src="{% static  "plugins/forms/validation/jquery.validate.js" %}"></script>
+        <script src="{% static "plugins/forms/bootstrap-filestyle/bootstrap-filestyle.js" %}"></script>
+        <script src="{% static "plugins/forms/select2/select2.js" %}"></script>
+        <script src="{% static "plugins/forms/validation/additional-methods.min.js" %}"></script>
     </body>
 </html>

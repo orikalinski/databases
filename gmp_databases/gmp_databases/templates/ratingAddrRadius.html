@@ -22,25 +22,28 @@
                                         <h4 class="panel-title">Search</h4>
                                     </div>
                                     <div class="panel-body pt0 pb0">
-                                        <form id="validate" class="form-horizontal group-border stripped" role="form" method="get" action="">
+                                        <form id="validate" novalidate="novalidate" class="form-horizontal group-border stripped" role="form" method="get" action="">
                                             <div class="form-group">
                                                 <label class="col-lg-2 col-md-3 control-label" for="">Rating</label>
                                                 <div class="col-lg-10 col-md-9">
-                                                    <input id="decimal-spinner" class="form-control" type="text" value="4.00" name="rating">
+                                                    <input id="decimal-spinner" class="form-control required"
+                                                           aria-required="true" aria-invalid="true" type="text" value="4.00" name="rating">
                                                 </div>
                                             </div>
                                             <!-- End .form-group  -->
                                             <div class="form-group">
                                                 <label for="address" class="col-lg-2 col-md-3 control-label">Address</label>
                                                 <div class="col-lg-10 col-md-9">
-                                                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter address">
+                                                    <input type="text" class="form-control required" aria-required="true" aria-invalid="true"
+                                                           id="address" name="address" placeholder="Enter address">
                                                 </div>
                                             </div>
                                             <!-- End .form-group  -->
                                             <div class="form-group">
-                                                <label class="col-lg-2 col-md-3 control-label" for="">Radius</label>
+                                                <label class="col-lg-2 col-md-3 control-label" for="">Radius (Km)</label>
                                                 <div class="col-lg-10 col-md-9">
-                                                    <input id="basic-spinner" class="form-control" type="text" value="1000" name="radius">
+                                                    <input id="basic-spinner" class="form-control required" aria-required="true"
+                                                           aria-invalid="true" type="text" value="20" name="radius">
                                                 </div>
                                             </div>
                                             <!-- End .form-group  -->
@@ -48,11 +51,11 @@
                                                 <label class="col-lg-2 col-md-3 control-label">Order By</label>
                                                 <div class="col-lg-10 col-md-9">
                                                     <div class="radio-custom radio-inline">
-                                                        <input type="radio" name="order_by" value="rating" id="rating">
+                                                        <input type="radio" name="order_by" value="rating" checked="checked" id="rating">
                                                         <label for="radio4">Rating</label>
                                                     </div>
                                                     <div class="radio-custom radio-inline">
-                                                        <input type="radio" name="order_by" value="distance" checked="checked" id="rating">
+                                                        <input type="radio" name="order_by" value="distance" id="rating">
                                                         <label for="radio5">Distance</label>
                                                     </div>
                                                 </div>
@@ -154,5 +157,10 @@
         <script src="{% static  "js/jquery.dynamic.js" %}"></script>
         <script src="{% static  "js/main.js" %}"></script>
         <script src="{% static  "js/pages/forms-advanced.js" %}"></script>
+        <script src="{% static  "js/pages/forms-validation.js" %}"></script>
+        <script src="{% static  "plugins/forms/validation/jquery.validate.js" %}"></script>
+        <script src="{% static "plugins/forms/bootstrap-filestyle/bootstrap-filestyle.js" %}"></script>
+        <script src="{% static "plugins/forms/select2/select2.js" %}"></script>
+        <script src="{% static "plugins/forms/validation/additional-methods.min.js" %}"></script>
     </body>
 </html>

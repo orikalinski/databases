@@ -1,5 +1,5 @@
+{% load static %}
 {% include "header_and_sidebar.html" %}
-
             <!-- / end-of-header-and-sidebar -->
 
             <!-- .page-content -->
@@ -44,7 +44,8 @@
                                             <div class="form-group">
                                                 <label class="col-lg-2 col-md-3 control-label" for="">Rating</label>
                                                 <div class="col-lg-10 col-md-9">
-                                                    <input id="decimal-spinner" class="form-control" type="text" value="4.00" name="rating">
+                                                    <input id="decimal-spinner" class="form-control required" aria-required="true"
+                                                           aria-invalid="true" type="text" value="4.00" name="rating">
                                                 </div>
                                             </div>
                                             <!-- End .form-group  -->
@@ -52,13 +53,13 @@
                                                 <label class="col-lg-2 col-md-3 control-label">Day</label>
                                                 <div class="col-lg-10 col-md-9">
                                                     <select class="form-control" name="day">
-                                                        <option value="SUNDAY">SUNDAY</option>
-                                                        <option value="MONDAY">MONDAY</option>
-                                                        <option value="TUESDAY">TUESDAY</option>
-                                                        <option value="WEDNESDAY">WEDNESDAY</option>
-                                                        <option value="THURSDAY">THURSDAY</option>
-                                                        <option value="FRIDAY">FRIDAY</option>
-                                                        <option value="SATURDAY">SATURDAY</option>
+                                                        <option value="0">Sunday</option>
+                                                        <option value="1">Monday</option>
+                                                        <option value="2">Tuesday</option>
+                                                        <option value="3">Wednesday</option>
+                                                        <option value="4">Thursday</option>
+                                                        <option value="5">Friday</option>
+                                                        <option value="6">Saturday</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -68,7 +69,8 @@
                                                 <div class="col-lg-10 col-md-9">
                                                     <div class="input-group bootstrap-timepicker">
                                                         <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                                        <input id="customtime-timepicker" type="text" class="form-control" name="openTime">
+                                                        <input id="customtime-timepicker" type="text" class="form-control required"
+                                                               aria-required="true" aria-invalid="true" name="open_time">
                                                     </div>
                                                 </div>
                                             </div>
@@ -78,7 +80,8 @@
                                                 <div class="col-lg-10 col-md-9">
                                                     <div class="input-group bootstrap-timepicker">
                                                         <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                                        <input id="minute-step-timepicker" type="text" class="form-control" name="closeTime">
+                                                        <input id="minute-step-timepicker" type="text" class="form-control required"
+                                                               aria-required="true" aria-invalid="true" name="close_time">
                                                     </div>
                                                 </div>
                                             </div>
@@ -86,14 +89,16 @@
                                             <div class="form-group">
                                                 <label for="address" class="col-lg-2 col-md-3 control-label">Address</label>
                                                 <div class="col-lg-10 col-md-9">
-                                                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter address">
+                                                    <input type="text" class="form-control required" aria-required="true"
+                                                           aria-invalid="true" id="address" name="address" placeholder="Enter address">
                                                 </div>
                                             </div>
                                             <!-- End .form-group  -->
                                             <div class="form-group">
-                                                <label class="col-lg-2 col-md-3 control-label" for="">Radius</label>
+                                                <label class="col-lg-2 col-md-3 control-label" for="">Radius (Km)</label>
                                                 <div class="col-lg-10 col-md-9">
-                                                    <input id="basic-spinner" class="form-control" type="text" value="1000" name="radius">
+                                                    <input id="basic-spinner" class="form-control required"
+                                                           aria-required="true" aria-invalid="true" type="text" value="20" name="radius">
                                                 </div>
                                             </div>
                                             <!-- End .form-group  -->
@@ -128,70 +133,76 @@
         </div>
         <!-- Javascripts -->
         <!-- Load pace first -->
-        <script src="{% static  plugins/core/pace/pace.min.js %}"></script>
+        <script src="{% static "plugins/core/pace/pace.min.js" %}"></script>
         <!-- Important javascript libs(put in all pages) -->
-        <script src="{% static  http://code.jquery.com/jquery-2.1.1.min.js %}"></script>
+        <script src="{% static "http://code.jquery.com/jquery-2.1.1.min.js" %}"></script>
         <script>
-        window.jQuery || document.write('<script src="{% static  js/libs/jquery-2.1.1.min.js %}">\x3C/script>')
+        window.jQuery || document.write('<script src="{% static "js/libs/jquery-2.1.1.min.js" %}">\x3C/script>')
         </script>
-        <script src="{% static  http://code.jquery.com/ui/1.10.4/jquery-ui.js %}"></script>
+        <script src="{% static "http://code.jquery.com/ui/1.10.4/jquery-ui.js" %}"></script>
         <script>
-        window.jQuery || document.write('<script src="{% static  js/libs/jquery-ui-1.10.4.min.js %}">\x3C/script>')
+        window.jQuery || document.write('<script src="{% static "js/libs/jquery-ui-1.10.4.min.js" %}">\x3C/script>')
         </script>
         <!--[if lt IE 9]>
-  <script type="{% static  text/javascript" src="js/libs/excanvas.min.js %}"></script>
-  <script type="{% static  text/javascript" src="http://html5shim.googlecode.com/svn/trunk/html5.js %}"></script>
-  <script type="{% static  text/javascript" src="js/libs/respond.min.js %}"></script>
+  <script type="{% static "text/javascript" src="js/libs/excanvas.min.js" %}"></script>
+  <script type="{% static "text/javascript" src="http://html5shim.googlecode.com/svn/trunk/html5.js" %}"></script>
+  <script type="{% static "text/javascript" src="js/libs/respond.min.js" %}"></script>
 <![endif]-->
         <!-- Bootstrap plugins -->
-        <script src="{% static  js/bootstrap/bootstrap.js %}"></script>
+        <script src="{% static "js/bootstrap/bootstrap.js" %}"></script>
         <!-- Core plugins ( not remove ) -->
-        <script src="{% static  js/libs/modernizr.custom.js %}"></script>
+        <script src="{% static "js/libs/modernizr.custom.js" %}"></script>
         <!-- Handle responsive view functions -->
-        <script src="{% static  js/jRespond.min.js %}"></script>
+        <script src="{% static "js/jRespond.min.js" %}"></script>
         <!-- Custom scroll for sidebars,tables and etc. -->
-        <script src="{% static  plugins/core/slimscroll/jquery.slimscroll.min.js %}"></script>
-        <script src="{% static  plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js %}"></script>
+        <script src="{% static "plugins/core/slimscroll/jquery.slimscroll.min.js" %}"></script>
+        <script src="{% static "plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js" %}"></script>
         <!-- Remove click delay in touch -->
-        <script src="{% static  plugins/core/fastclick/fastclick.js %}"></script>
+        <script src="{% static "plugins/core/fastclick/fastclick.js" %}"></script>
         <!-- Increase jquery animation speed -->
-        <script src="{% static  plugins/core/velocity/jquery.velocity.min.js %}"></script>
+        <script src="{% static "plugins/core/velocity/jquery.velocity.min.js" %}"></script>
         <!-- Quick search plugin (fast search for many widgets) -->
-        <script src="{% static  plugins/core/quicksearch/jquery.quicksearch.js %}"></script>
+        <script src="{% static "plugins/core/quicksearch/jquery.quicksearch.js" %}"></script>
         <!-- Bootbox fast bootstrap modals -->
-        <script src="{% static  plugins/ui/bootbox/bootbox.js %}"></script>
+        <script src="{% static "plugins/ui/bootbox/bootbox.js" %}"></script>
         <!-- Other plugins ( load only nessesary plugins for every page) -->
-        <script src="{% static  js/libs/date.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.custom.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.resize.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.time.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.growraf.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.categories.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.stack.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.orderBars.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.tooltip.min.js %}"></script>
-        <script src="{% static  plugins/charts/flot/jquery.flot.curvedLines.js %}"></script>
-        <script src="{% static  plugins/charts/sparklines/jquery.sparkline.js %}"></script>
-        <script src="{% static  plugins/ui/waypoint/waypoints.js %}"></script>
-        <script src="{% static  plugins/ui/weather/skyicons.js %}"></script>
-        <script src="{% static  plugins/ui/notify/jquery.gritter.js %}"></script>
-        <script src="{% static  plugins/misc/vectormaps/jquery-jvectormap-1.2.2.min.js %}"></script>
-        <script src="{% static  plugins/misc/vectormaps/maps/jquery-jvectormap-world-mill-en.js %}"></script>
-        <script src="{% static  plugins/misc/countTo/jquery.countTo.js %}"></script>
-        <script src="{% static  js/jquery.dynamic.js %}"></script>
-        <script src="{% static  plugins/forms/fancyselect/fancySelect.js %}"></script>
-        <script src="{% static  plugins/forms/select2/select2.js %}"></script>
-        <script src="{% static  plugins/forms/maskedinput/jquery.maskedinput.js %}"></script>
-        <script src="{% static  plugins/forms/dual-list-box/jquery.bootstrap-duallistbox.js %}"></script>
-        <script src="{% static  plugins/forms/spinner/jquery.bootstrap-touchspin.js %}"></script>
-        <script src="{% static  plugins/forms/bootstrap-timepicker/bootstrap-timepicker.js %}"></script>
-        <script src="{% static  js/libs/typeahead.bundle.js %}"></script>
-        <script src="{% static  plugins/forms/summernote/summernote.js %}"></script>
-        <script src="{% static  plugins/forms/bootstrap-markdown/bootstrap-markdown.js %}"></script>
-        <script src="{% static  plugins/forms/dropzone/dropzone.js %}"></script>
-        <script src="{% static  plugins/charts/sparklines/jquery.sparkline.js %}"></script>
-        <script src="{% static  js/jquery.dynamic.js %}"></script>
-        <script src="{% static  js/main.js %}"></script>
-        <script src="{% static  js/pages/forms-advanced.js %}"></script>
+        <script src="{% static "js/libs/date.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.custom.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.resize.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.time.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.growraf.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.categories.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.stack.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.orderBars.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.tooltip.min.js" %}"></script>
+        <script src="{% static "plugins/charts/flot/jquery.flot.curvedLines.js" %}"></script>
+        <script src="{% static "plugins/charts/sparklines/jquery.sparkline.js" %}"></script>
+        <script src="{% static "plugins/ui/waypoint/waypoints.js" %}"></script>
+        <script src="{% static "plugins/ui/weather/skyicons.js" %}"></script>
+        <script src="{% static "plugins/ui/notify/jquery.gritter.js" %}"></script>
+        <script src="{% static "plugins/misc/vectormaps/jquery-jvectormap-1.2.2.min.js" %}"></script>
+        <script src="{% static "plugins/misc/vectormaps/maps/jquery-jvectormap-world-mill-en.js" %}"></script>
+        <script src="{% static "plugins/misc/countTo/jquery.countTo.js" %}"></script>
+        <script src="{% static "js/jquery.dynamic.js" %}"></script>
+        <script src="{% static "plugins/forms/fancyselect/fancySelect.js" %}"></script>
+        <script src="{% static "plugins/forms/select2/select2.js" %}"></script>
+        <script src="{% static "plugins/forms/maskedinput/jquery.maskedinput.js" %}"></script>
+        <script src="{% static "plugins/forms/dual-list-box/jquery.bootstrap-duallistbox.js" %}"></script>
+        <script src="{% static "plugins/forms/spinner/jquery.bootstrap-touchspin.js" %}"></script>
+        <script src="{% static "plugins/forms/bootstrap-timepicker/bootstrap-timepicker.js" %}"></script>
+        <script src="{% static "js/libs/typeahead.bundle.js" %}"></script>
+        <script src="{% static "plugins/forms/summernote/summernote.js" %}"></script>
+        <script src="{% static "plugins/forms/bootstrap-markdown/bootstrap-markdown.js" %}"></script>
+        <script src="{% static "plugins/forms/dropzone/dropzone.js" %}"></script>
+        <script src="{% static "plugins/charts/sparklines/jquery.sparkline.js" %}"></script>
+        <script src="{% static "js/jquery.dynamic.js" %}"></script>
+        <script src="{% static "js/main.js" %}"></script>
+        <script src="{% static "js/pages/forms-advanced.js" %}"></script>
+        <script src="{% static  "js/pages/forms-advanced.js" %}"></script>
+        <script src="{% static  "js/pages/forms-validation.js" %}"></script>
+        <script src="{% static  "plugins/forms/validation/jquery.validate.js" %}"></script>
+        <script src="{% static "plugins/forms/bootstrap-filestyle/bootstrap-filestyle.js" %}"></script>
+        <script src="{% static "plugins/forms/select2/select2.js" %}"></script>
+        <script src="{% static "plugins/forms/validation/additional-methods.min.js" %}"></script>
     </body>
 </html>

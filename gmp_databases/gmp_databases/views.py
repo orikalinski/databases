@@ -2,6 +2,7 @@ import mysql.connector
 import os
 from time import time
 
+from googleplaces import geocode_location
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -9,7 +10,7 @@ from django.shortcuts import render
 from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
     REVIEWS_DETAILS_QUERY, PLACE_FIRST_IMAGE_QUERY, PLACE_TYPES_QUERY, PLACE_OPENING_HOURS_QUERY, AVG_STATS_QUERY, \
     PLACES_COUNT_QUERY, REVIEWS_COUNT_QUERY, CITIES_COUNT_QUERY, IMAGES_COUNT_QUERY, REVIEWS_OVER_RATING_FOUR_QUERY, \
-    PLACE_IMAGES_QUERY, COUNT_STATS_QUERY, NAME_SEARCH_QUERY
+    PLACE_IMAGES_QUERY, COUNT_STATS_QUERY, NAME_SEARCH_QUERY, GEO_DISTANCE_AND_RATING_QUERY, FULL_SEARCH_QUERY
 from models import Place, Review, Image
 
 host = "mysqlsrv.cs.tau.ac.il"
@@ -79,38 +80,72 @@ def handle_uploaded_file(f, place_id):
 
 
 def filter_places_by_opening_hours_and_type(request):
-    day = request.GET.get("day")
-    start_time = request.GET.get("open_time")
-    end_time = request.GET.get("close_time")
-    place_type = request.GET.get("type")
-    # order_by = None
-    # limit = None
-    if day:
-        day = int(day)
+    results = list()
+    searched_for_results = False
+    is_distance_query = False
+    if request.GET:
+        day = int(request.GET.get("day"))
+        start_time = request.GET.get("open_time")
+        end_time = request.GET.get("close_time")
+        place_type = request.GET.get("type")
         start_time, end_time = handle_times(start_time, end_time)
         cur.execute(OPENING_HOURS_AND_TYPE_QUERY, (day, start_time, end_time, start_time, end_time, place_type))
         results = get_results(cur)
         searched_for_results = True
-    else:
-        results = list()
-        searched_for_results = False
     return render(request, 'typeOH.html', {"results": results,
-                                           "searched_for_results": searched_for_results})
+                                           "searched_for_results": searched_for_results,
+                                           "is_distance_query": is_distance_query})
 
 
-def filter_places_by_address_and_rating(request, address, radius, bottom_rating, order_by, limit):
-    places = Place.objects.filter(rating__gt=bottom_rating)
-    places = get_ordered_limited_places(places, order_by, limit)
-    return render(request, 'ratingAddrRadius.html', {'results': list(places.values())})
+def filter_places_by_address_and_rating(request):
+    results = []
+    searched_for_results = False
+    is_distance_query = True
+    if request.GET:
+        rating = float(request.GET.get("rating"))
+        address = request.GET.get("address")
+        radius = int(request.GET.get("radius"))
+        geo_location = geocode_location(address)
+        lat = geo_location["lat"]
+        lng = geo_location["lng"]
+        order_by = request.GET.get("order_by")
+        order_by_clause = "%s ASC" % order_by if order_by == "distance" else "rating DESC"
+        query_with_order_by = "%s order by %s" % (GEO_DISTANCE_AND_RATING_QUERY, order_by_clause)
+        cur.execute(query_with_order_by, (lat, lng, lat, rating, radius))
+        results = get_results(cur)
+        searched_for_results = True
+
+    return render(request, 'ratingAddrRadius.html', {"results": results,
+                                                     "searched_for_results": searched_for_results,
+                                                     "is_distance_query": is_distance_query})
 
 
-def filter_by_all_params(request, day, starttime, endtime,
-                         address, radius, bottom_rating, type_name, order_by, limit):
-    places = Place.objects.filter(rating__gt=bottom_rating)
-    places = get_filter_by_opening_hours(places, day, starttime, endtime)
-    places = places.filter(types__name=type_name)
-    places = get_ordered_limited_places(places, order_by, limit)
-    return render(request, 'detailsTable.html', {'results': list(places.values())})
+def filter_by_all_params(request):
+    results = list()
+    searched_for_results = False
+    is_distance_query = True
+    if request.GET:
+        rating = request.GET.get("rating")
+        address = request.GET.get("address")
+        radius = int(request.GET.get("radius"))
+        geo_location = geocode_location(address)
+        lat = geo_location["lat"]
+        lng = geo_location["lng"]
+        day = int(request.GET.get("day"))
+        start_time = request.GET.get("open_time")
+        end_time = request.GET.get("close_time")
+        place_type = request.GET.get("type")
+        start_time, end_time = handle_times(start_time, end_time)
+        order_by = request.GET.get("order_by")
+        order_by_clause = "%s ASC" % order_by if order_by == "distance" else "rating DESC"
+        query_with_order_by = "%s order by %s" % (FULL_SEARCH_QUERY, order_by_clause)
+        cur.execute(query_with_order_by, (lat, lng, lat, day, start_time, end_time, start_time,
+                                          end_time, place_type, rating, radius))
+        results = get_results(cur)
+        searched_for_results = True
+    return render(request, 'detailsTable.html', {"results": results,
+                                                 "searched_for_results": searched_for_results,
+                                                 "is_distance_query": is_distance_query})
 
 
 def insert_image(request):
@@ -193,3 +228,4 @@ def text_search(request):
         searched_for_results = True
     return render(request, "textSearch.html", {"results": results,
                                                "searched_for_results": searched_for_results})
+

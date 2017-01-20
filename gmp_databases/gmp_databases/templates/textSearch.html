@@ -25,7 +25,8 @@
                                             <div class="form-group">
                                                 <label for="address" class="col-lg-2 col-md-3 control-label">Text</label>
                                                 <div class="col-lg-10 col-md-9">
-                                                    <input type="text" class="form-control" id="text" name="text" placeholder="What's on your mind">
+                                                    <input type="text" class="form-control required" aria-required="true"
+                                                           aria-invalid="true" id="text" name="text" placeholder="What's on your mind">
                                                     <span><button type="submit" class="btn btn-default" style="margin-left: 150px">Search</button></span>
                                                 </div>
                                             </div>
@@ -120,5 +121,10 @@
         <script src="{% static  "js/jquery.dynamic.js" %}"></script>
         <script src="{% static  "js/main.js" %}"></script>
         <script src="{% static  "js/pages/forms-advanced.js" %}"></script>
+        <script src="{% static  "js/pages/forms-validation.js" %}"></script>
+        <script src="{% static  "plugins/forms/validation/jquery.validate.js" %}"></script>
+        <script src="{% static "plugins/forms/bootstrap-filestyle/bootstrap-filestyle.js" %}"></script>
+        <script src="{% static "plugins/forms/select2/select2.js" %}"></script>
+        <script src="{% static "plugins/forms/validation/additional-methods.min.js" %}"></script>
     </body>
 </html>

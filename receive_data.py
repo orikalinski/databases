@@ -1,16 +1,15 @@
-from bs4 import BeautifulSoup
+import os
+import time
 from datetime import datetime
 from itertools import cycle
-import time
-import os
 
-from django.core.exceptions import ValidationError
+from bs4 import BeautifulSoup
 from googleplaces import GooglePlaces, types, GooglePlacesError
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE",
                       "gmp_databases.gmp_databases.settings")
 
-from gmp_databases.gmp_databases.models import User, Place, \
+from gmp_databases.gmp_databases.models import Place, \
     Image, Country, City, Type, Location, LOCATION_TYPE, OpeningHours, Review
 
 api_keys = ["AIzaSyAu4PKwcADVNSbjkfs6wOcxNeEHtHO6boQ",
