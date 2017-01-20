@@ -1,10 +1,15 @@
-from time import time
+import mysql.connector
 import os
+from time import time
+
+from django.db.models import Q
 from django.shortcuts import render
 
-from models import Place, Review, Image, City
-from django.db.models import Q, Avg, Count
-import mysql.connector
+from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
+    REVIEWS_DETAILS_QUERY, PLACE_FIRST_IMAGE_QUERY, PLACE_TYPES_QUERY, PLACE_OPENING_HOURS_QUERY, AVG_STATS_QUERY, \
+    PLACES_COUNT_QUERY, REVIEWS_COUNT_QUERY, CITIES_COUNT_QUERY, IMAGES_COUNT_QUERY, REVIEWS_OVER_RATING_FOUR_QUERY, \
+    PLACE_IMAGES_QUERY
+from models import Place, Review, Image
 
 host = "mysqlsrv.cs.tau.ac.il"
 user = "DbMysql13"
@@ -18,7 +23,7 @@ try:
 except mysql.connector.Error:
     pass
 
-
+NUMERIC_DAY_TO_NAME = {0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"}
 FIELDS = ["website", "rating", "name", "location__formatted_address", "id"]
 
 
@@ -55,11 +60,13 @@ def get_results(cur):
 
 
 def get_images_slices(place_id):
-    place = Place.objects.get(id=place_id)
-    place_images = Place.objects.values_list("image__url", flat=True).filter(id=place_id)
+    cur.execute(PLACE_IMAGES_QUERY, (place_id, ))
+    results = get_results(cur)
+    place_images = [result["url"] for result in results]
+    place_name = results[0]["name"]
     quarter_count = len(place_images) // 4 + 1
     place_images = [place_images[quarter_count * i:quarter_count * (i + 1)] for i in xrange(4)]
-    return place.name, place_images
+    return place_name, place_images
 
 
 def handle_uploaded_file(f, place_id):
@@ -71,7 +78,7 @@ def handle_uploaded_file(f, place_id):
 
 
 def filter_places_by_opening_hours_and_type(request):
-    day = request.GET.get("day")
+    day = int(request.GET.get("day"))
     start_time = request.GET.get("open_time")
     end_time = request.GET.get("close_time")
     place_type = request.GET.get("type")
@@ -79,33 +86,7 @@ def filter_places_by_opening_hours_and_type(request):
     # limit = None
     if day:
         start_time, end_time = handle_times(start_time, end_time)
-        query = """
-        SELECT DISTINCT
-        gmp_databases_place.website,
-        gmp_databases_place.rating,
-        gmp_databases_place.name,
-        gmp_databases_location.formatted_address,
-        gmp_databases_place.id
-        FROM
-            gmp_databases_place
-                INNER JOIN
-            gmp_databases_place_opening_hours ON (gmp_databases_place.id = gmp_databases_place_opening_hours.place_id)
-                INNER JOIN
-            gmp_databases_openinghours ON (gmp_databases_place_opening_hours.openinghours_id = gmp_databases_openinghours.id)
-                INNER JOIN
-            gmp_databases_place_types ON (gmp_databases_place.id = gmp_databases_place_types.place_id)
-                INNER JOIN
-            gmp_databases_type ON (gmp_databases_place_types.type_id = gmp_databases_type.id)
-                LEFT OUTER JOIN
-            gmp_databases_location ON (gmp_databases_place.location_id = gmp_databases_location.id)
-        WHERE
-            (gmp_databases_openinghours.day = %s
-                AND (gmp_databases_openinghours.open BETWEEN %s AND %s
-                OR gmp_databases_openinghours.close BETWEEN %s AND %s)
-                AND gmp_databases_type.name = %s)
-        ORDER BY gmp_databases_place.rating DESC
-        """
-        cur.execute(query, (day, start_time, end_time, start_time, end_time, place_type))
+        cur.execute(OPENING_HOURS_AND_TYPE_QUERY, (day, start_time, end_time, start_time, end_time, place_type))
         results = get_results(cur)
         searched_for_results = True
     else:
@@ -132,7 +113,7 @@ def filter_by_all_params(request, day, starttime, endtime,
 
 def insert_image(request):
     image = request.FILES.get("file")
-    place_id = request.POST.get("place_id")
+    place_id = int(request.POST.get("place_id"))
     handle_uploaded_file(image, place_id)
     place_name, place_images = get_images_slices(place_id)
     return render(request, "gallery.html", {"place_name": place_name, "place_images": place_images,
@@ -141,19 +122,24 @@ def insert_image(request):
 
 def insert_review(request):
     author_name = request.GET.get("author_name")
-    place_id = request.GET.get("place_id")
-    rating = request.GET.get("rating")
+    place_id = int(request.GET.get("place_id"))
+    rating = float(request.GET.get("rating"))
     text = request.GET.get("text")
     Review.objects.create(author_name=author_name, place_id=place_id, rating=rating, text=text)
-    get_place_details(request)
+    return get_place_details(request)
 
 
 def home_page_stats(request):
-    places_count = Place.objects.count()
-    reviews_count = Review.objects.count()
-    images_count = Image.objects.count()
-    cities_count = City.objects.count()
-    reviews_over_rating_four = Review.objects.filter(rating__gt=4).count()
+    cur.execute(PLACES_COUNT_QUERY)
+    places_count = get_results(cur)[0]["places_count"]
+    cur.execute(REVIEWS_COUNT_QUERY)
+    reviews_count = get_results(cur)[0]["reviews_count"]
+    cur.execute(IMAGES_COUNT_QUERY)
+    images_count = get_results(cur)[0]["images_count"]
+    cur.execute(CITIES_COUNT_QUERY)
+    cities_count = get_results(cur)[0]["cities_count"]
+    cur.execute(REVIEWS_OVER_RATING_FOUR_QUERY)
+    reviews_over_rating_four = get_results(cur)[0]["reviews_count"]
     return render(request, 'index.html', {"places_count": places_count, "reviews_count": reviews_count,
                                           "images_count": images_count, "cities_count": cities_count,
                                           "reviews_perc_over_four":
@@ -161,65 +147,31 @@ def home_page_stats(request):
 
 
 def get_complicated_stats(request):
-    filtered_places = Place.objects.all().values("location__city__name",
-                                                 "types__name")\
-                           .annotate(avg_rating=Avg('rating'), count_rows=Count("rating")) \
-                           .filter(avg_rating__gt=4)
-    return render(request, 'html', list(filtered_places))
+    cur.execute(AVG_STATS_QUERY)
+    return render(request, 'html', get_results(cur))
 
 
 def get_place_details(request):
-    place_id = request.GET.get("place_id")
-    place = Place.objects.filter(id=place_id)
-    cur.execute("""SELECT
-                    *
-                   FROM
-                       gmp_databases_place
-                   WHERE
-                       gmp_databases_place.id = %s
-                   LIMIT 1""", (place_id, ))
+    place_id = int(request.GET.get("place_id"))
+    cur.execute(PLACE_DETAILS_QUERY, (place_id, ))
     place_details = get_results(cur)[0]
     place_details["place_id"] = place_details["id"]
-    cur.execute("""
-                SELECT
-                *
-                FROM
-                    gmp_databases_review
-                WHERE
-                    gmp_databases_review.place_id = %s""", (place_id, ))
+    cur.execute(REVIEWS_DETAILS_QUERY, (place_id, ))
     place_details["reviews"] = get_results(cur)
-    cur.execute("""SELECT
-                    gmp_databases_image.url
-                FROM
-                    gmp_databases_image
-                WHERE
-                    gmp_databases_image.place_id = %s
-                LIMIT 1""", (place_id, ))
-    place_details["image_url"] = get_results(cur)[0]["url"] \
-        or "https://www.raise.sg/membership/web/images/noimage.jpg"
-    cur.execute("""SELECT
-                    *
-                FROM
-                    gmp_databases_type
-                        INNER JOIN
-                    gmp_databases_place_types ON (gmp_databases_type.id = gmp_databases_place_types.type_id)
-                WHERE
-                    gmp_databases_place_types.place_id = %s""", (place_id, ))
+    cur.execute(PLACE_FIRST_IMAGE_QUERY, (place_id, ))
+    images_result = get_results(cur)
+    place_details["image_url"] = images_result[0]["url"] if images_result \
+        else "https://www.raise.sg/membership/web/images/noimage.jpg"
+    cur.execute(PLACE_TYPES_QUERY, (place_id, ))
     place_details["types"] = get_results(cur)
-    cur.execute("""SELECT
-                    *
-                FROM
-                    gmp_databases_openinghours
-                        INNER JOIN
-                    gmp_databases_place_opening_hours ON (gmp_databases_openinghours.id = gmp_databases_place_opening_hours.openinghours_id)
-                WHERE
-                    gmp_databases_place_opening_hours.place_id = %s""", (place_id, ))
-    place_details["opening_hours_list"] = get_results(cur)
+    cur.execute(PLACE_OPENING_HOURS_QUERY, (place_id, ))
+    place_details["opening_hours_list"] = [dict(result, **{"day": NUMERIC_DAY_TO_NAME[result["day"]]})
+                                           for result in get_results(cur)]
     return render(request, "place.html", place_details)
 
 
 def get_place_images(request):
-    place_id = request.GET.get("place_id")
+    place_id = int(request.GET.get("place_id"))
     place_name, place_images = get_images_slices(place_id)
     return render(request, "gallery.html", {"place_name": place_name, "place_images": place_images,
                                             "place_id": place_id})
