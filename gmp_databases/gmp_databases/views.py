@@ -3,6 +3,7 @@ import os
 from time import time
 
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
@@ -78,13 +79,14 @@ def handle_uploaded_file(f, place_id):
 
 
 def filter_places_by_opening_hours_and_type(request):
-    day = int(request.GET.get("day"))
+    day = request.GET.get("day")
     start_time = request.GET.get("open_time")
     end_time = request.GET.get("close_time")
     place_type = request.GET.get("type")
     # order_by = None
     # limit = None
     if day:
+        day = int(day)
         start_time, end_time = handle_times(start_time, end_time)
         cur.execute(OPENING_HOURS_AND_TYPE_QUERY, (day, start_time, end_time, start_time, end_time, place_type))
         results = get_results(cur)
@@ -126,7 +128,7 @@ def insert_review(request):
     rating = float(request.GET.get("rating"))
     text = request.GET.get("text")
     Review.objects.create(author_name=author_name, place_id=place_id, rating=rating, text=text)
-    return get_place_details(request)
+    return HttpResponseRedirect('/place?place_id=%s' % place_id)
 
 
 def home_page_stats(request):
