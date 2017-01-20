@@ -17,6 +17,9 @@
                             <th class="per40">Name</th>
                             <th class="per40">Address</th>
                             <th class="per40">Website</th>
+                            {% if is_distance_query %}
+                                <th class="per15">Distance</th>
+                            {% endif %}
                             <th class="per15">Rating</th>
                         </tr>
                     </thead>
@@ -30,6 +33,9 @@
                                         <td><a href="{{ result.website }}">{{ result.website }}</a></td>
                                     {% else %}
                                         <td><h5>-</h5></td>
+                                    {% endif %}
+                                    {% if is_distance_query %}
+                                        <td>{{ result.distance }}</td>
                                     {% endif %}
                                     {% if result.rating %}
                                         <td>{{ result.rating }}</td>
