@@ -95,15 +95,18 @@ def filter_places_by_address_and_rating(request):
         rating = float(request.GET.get("rating"))
         address = request.GET.get("address")
         radius = int(request.GET.get("radius"))
-        geo_location = geocode_location(address)
-        lat = geo_location["lat"]
-        lng = geo_location["lng"]
-        order_by = request.GET.get("order_by")
-        order_by_clause = "%s ASC" % order_by if order_by == "distance" else "rating DESC"
-        query_with_order_by = "%s order by %s" % (GEO_DISTANCE_AND_RATING_QUERY, order_by_clause)
-        cur.execute(query_with_order_by, (lat, lng, lat, rating, radius))
-        results = get_results(cur)
-        searched_for_results = True
+        try:
+            geo_location = geocode_location(address)
+            lat = geo_location["lat"]
+            lng = geo_location["lng"]
+            order_by = request.GET.get("order_by")
+            order_by_clause = "%s ASC" % order_by if order_by == "distance" else "rating DESC"
+            query_with_order_by = "%s order by %s" % (GEO_DISTANCE_AND_RATING_QUERY, order_by_clause)
+            cur.execute(query_with_order_by, (lat, lng, lat, rating, radius))
+            results = get_results(cur)
+            searched_for_results = True
+        except GooglePlacesError, e:
+            pass
 
     return render(request, 'ratingAddrRadius.html', {"results": results,
                                                      "searched_for_results": searched_for_results,
