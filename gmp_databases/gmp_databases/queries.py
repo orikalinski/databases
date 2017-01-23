@@ -239,3 +239,13 @@ WHERE
         AND gmp_databases_place.rating >= %s)
 HAVING distance <= %s
 """
+
+INSERT_REVIEW_QUERY = """
+INSERT INTO gmp_databases_review (author_name, rating, text, place_id)
+VALUES (%s, %s, %s, %s);
+"""
+
+INSERT_IMAGE_QUERY = """
+INSERT INTO gmp_databases_image (url, place_id)
+VALUES (%s, %s);
+"""

@@ -2,16 +2,16 @@ import mysql.connector
 import os
 from time import time
 
-from googleplaces import geocode_location
-from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from googleplaces import geocode_location
 
+from models import Review, Image
 from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
     REVIEWS_DETAILS_QUERY, PLACE_FIRST_IMAGE_QUERY, PLACE_TYPES_QUERY, PLACE_OPENING_HOURS_QUERY, AVG_STATS_QUERY, \
     PLACES_COUNT_QUERY, REVIEWS_COUNT_QUERY, CITIES_COUNT_QUERY, IMAGES_COUNT_QUERY, REVIEWS_OVER_RATING_FOUR_QUERY, \
-    PLACE_IMAGES_QUERY, COUNT_STATS_QUERY, NAME_SEARCH_QUERY, GEO_DISTANCE_AND_RATING_QUERY, FULL_SEARCH_QUERY
-from models import Place, Review, Image
+    PLACE_IMAGES_QUERY, COUNT_STATS_QUERY, NAME_SEARCH_QUERY, GEO_DISTANCE_AND_RATING_QUERY, FULL_SEARCH_QUERY, \
+    INSERT_REVIEW_QUERY, INSERT_IMAGE_QUERY
 
 host = "mysqlsrv.cs.tau.ac.il"
 user = "DbMysql13"
@@ -29,17 +29,8 @@ NUMERIC_DAY_TO_NAME = {0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4
 FIELDS = ["website", "rating", "name", "location__formatted_address", "id"]
 
 
-def get_filter_by_opening_hours(places, day, starttime, endtime):
-    return places.filter(Q(opening_hours__day=day) & Q(
-        Q(opening_hours__open__range=(starttime, endtime)) | Q(opening_hours__close__range=(starttime, endtime)))) \
-        .distinct()
-
-
-def get_ordered_limited_places(places, order_by, limit):
-    limit = limit or 100
-    order_by = order_by or "rating"
-    places = places.order_by("-%s" % order_by)
-    return places[:limit]
+def redirect_to_homepage(request):
+    return HttpResponseRedirect("/index")
 
 
 def handle_times(start_time, end_time):
@@ -76,7 +67,7 @@ def handle_uploaded_file(f, place_id):
     with open("%s/%s" % (os.path.dirname(__file__), file_url), 'wb+') as dest:
         for chunk in f.chunks():
             dest.write(chunk)
-    Image.objects.create(url=file_url, place_id=place_id)
+    cur.execute(INSERT_IMAGE_QUERY, (file_url, place_id))
 
 
 def filter_places_by_opening_hours_and_type(request):
@@ -162,7 +153,7 @@ def insert_review(request):
     place_id = int(request.GET.get("place_id"))
     rating = float(request.GET.get("rating"))
     text = request.GET.get("text")
-    Review.objects.create(author_name=author_name, place_id=place_id, rating=rating, text=text)
+    cur.execute(INSERT_REVIEW_QUERY, (author_name, rating, text, place_id))
     return HttpResponseRedirect('/place?place_id=%s' % place_id)
 
 

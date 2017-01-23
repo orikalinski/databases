@@ -12,15 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.mysql',
@@ -28,7 +20,8 @@ DATABASES = {
        'USER': 'DbMysql13',
        'PASSWORD': 'DbMysql13',
        'HOST': 'mysqlsrv.cs.tau.ac.il',
-       'OPTIONS': {'charset': 'utf8mb4'},
+       'OPTIONS': {"charset": "utf8mb4",
+                   "init_command": "SET storage_engine=MYISAM"},
        'PORT': '3306',
    }
 }
@@ -42,7 +35,21 @@ SECRET_KEY = '=6e6s!lf=8#gy39*_$jfj5_ris31^q&4w%g5vgv)tm5ix+5@kl'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
+TEMPLATES = [
+{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+        ],
+    },
+},
+]
 
 ALLOWED_HOSTS = []
 
@@ -56,7 +63,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'south',
     'gmp_databases'
 )
 
@@ -75,7 +81,6 @@ WSGI_APPLICATION = 'gmp_databases.wsgi.application'
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -89,7 +94,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 
 STATIC_URL = '/static/'
