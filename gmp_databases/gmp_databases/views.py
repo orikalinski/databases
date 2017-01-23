@@ -1,12 +1,12 @@
-import mysql.connector
 import os
+import sys
 from time import time
 
+import MySQLdb as mdb
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from googleplaces import geocode_location
 
-from models import Review, Image
 from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
     REVIEWS_DETAILS_QUERY, PLACE_FIRST_IMAGE_QUERY, PLACE_TYPES_QUERY, PLACE_OPENING_HOURS_QUERY, AVG_STATS_QUERY, \
     PLACES_COUNT_QUERY, REVIEWS_COUNT_QUERY, CITIES_COUNT_QUERY, IMAGES_COUNT_QUERY, REVIEWS_OVER_RATING_FOUR_QUERY, \
@@ -18,12 +18,11 @@ user = "DbMysql13"
 password = "DbMysql13"
 dbname = "DbMysql13"
 try:
-    conn = mysql.connector.connect(host=host, database=dbname, user=user, password=password)
-    if conn.is_connected():
-        print('Connected to MySQL database')
+    conn = mdb.connect(host, user, password, dbname)
     cur = conn.cursor()
-except mysql.connector.Error:
-    pass
+except mdb.Error, e:
+    print "Error %d: %s" % (e.args[0], e.args[1])
+    sys.exit(1)
 
 NUMERIC_DAY_TO_NAME = {0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"}
 FIELDS = ["website", "rating", "name", "location__formatted_address", "id"]
