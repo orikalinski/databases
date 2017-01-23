@@ -5,7 +5,7 @@ from time import time
 import MySQLdb as mdb
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from googleplaces import geocode_location
+from googleplaces import geocode_location, GooglePlacesError
 
 from queries import OPENING_HOURS_AND_TYPE_QUERY, PLACE_DETAILS_QUERY, \
     REVIEWS_DETAILS_QUERY, PLACE_FIRST_IMAGE_QUERY, PLACE_TYPES_QUERY, PLACE_OPENING_HOURS_QUERY, AVG_STATS_QUERY, \
@@ -118,21 +118,24 @@ def filter_by_all_params(request):
         rating = request.GET.get("rating")
         address = request.GET.get("address")
         radius = int(request.GET.get("radius"))
-        geo_location = geocode_location(address)
-        lat = geo_location["lat"]
-        lng = geo_location["lng"]
-        day = int(request.GET.get("day"))
-        start_time = request.GET.get("open_time")
-        end_time = request.GET.get("close_time")
-        place_type = request.GET.get("type")
-        start_time, end_time = handle_times(start_time, end_time)
-        order_by = request.GET.get("order_by")
-        order_by_clause = "%s ASC" % order_by if order_by == "distance" else "rating DESC"
-        query_with_order_by = "%s order by %s" % (FULL_SEARCH_QUERY, order_by_clause)
-        cur.execute(query_with_order_by, (lat, lng, lat, day, start_time, end_time, start_time,
-                                          end_time, place_type, rating, radius))
-        results = get_results(cur)
-        searched_for_results = True
+        try:
+            geo_location = geocode_location(address)
+            lat = geo_location["lat"]
+            lng = geo_location["lng"]
+            day = int(request.GET.get("day"))
+            start_time = request.GET.get("open_time")
+            end_time = request.GET.get("close_time")
+            place_type = request.GET.get("type")
+            start_time, end_time = handle_times(start_time, end_time)
+            order_by = request.GET.get("order_by")
+            order_by_clause = "%s ASC" % order_by if order_by == "distance" else "rating DESC"
+            query_with_order_by = "%s order by %s" % (FULL_SEARCH_QUERY, order_by_clause)
+            cur.execute(query_with_order_by, (lat, lng, lat, day, start_time, end_time, start_time,
+                                              end_time, place_type, rating, radius))
+            results = get_results(cur)
+            searched_for_results = True
+        except GooglePlacesError, e:
+            pass
     return render(request, 'detailsTable.html', {"results": results,
                                                  "searched_for_results": searched_for_results,
                                                  "is_distance_query": is_distance_query})
