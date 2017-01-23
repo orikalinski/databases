@@ -20,8 +20,7 @@ DATABASES = {
        'USER': 'DbMysql13',
        'PASSWORD': 'DbMysql13',
        'HOST': 'mysqlsrv.cs.tau.ac.il',
-       'OPTIONS': {"charset": "utf8mb4",
-                   "init_command": "SET storage_engine=MYISAM"},
+       'OPTIONS': {"init_command": "SET storage_engine=MYISAM"},
        'PORT': '3306',
    }
 }
